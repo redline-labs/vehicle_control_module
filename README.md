@@ -15,7 +15,7 @@ A communication gateway and power distribution for motorsports, serving as the m
 
 ### Hardware
 Based on the Microchip [ATSAMV71Q21](https://www.microchip.com/wwwproducts/en/ATSAMV71Q21).
-* (2) CAN-FD channels via [TLE9252](https://www.infineon.com/cms/en/product/transceivers/automotive-transceiver/automotive-can-transceivers/tle9252vsk/).
+* (2) CAN-FD channels via [TLE9250](https://www.infineon.com/cms/en/product/transceivers/automotive-transceiver/automotive-can-transceivers/tle9250xsj/).
 * (3) 100BASE-T1 channels via [TJA1100](https://www.nxp.com/products/interfaces/ethernet-/automotive-ethernet-phy-transceivers/ieee-100base-t1-compliant-automotive-ethernet-phy-transceiver:TJA1100HN).
 * (1) 100BASE-TX channel via [KSZ8061MNX](https://www.microchip.com/wwwproducts/en/KSZ8061) to support debug with a laptop.
 * (18) High Side drivers via [BTS50015-1TAD](https://www.infineon.com/cms/en/product/power/smart-low-side-high-side-switches/automotive-smart-high-side-switch-profet/power-profet/bts50015-1tad/).
