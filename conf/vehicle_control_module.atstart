@@ -2,18 +2,84 @@ format_version: '2'
 name: My Project
 versions:
   api: '1.0'
-  backend: 1.6.148
-  commit: 605f106ab95776472e3febf2fac2471441fb1816
-  content: 1.0.1686
-  content_pack_name: acme-packs-all
+  backend: 1.7.279
+  commit: 1e07622763d149970fd8808a8f12ff3b1e84e0d7
+  content: unknown
+  content_pack_name: unknown
   format: '2'
-  frontend: 1.6.1894
+  frontend: 1.7.279
+  packs_version_avr8: 1.0.1401
+  packs_version_qtouch: unknown
+  packs_version_sam: 1.0.1373
+  version_backend: 1.7.279
+  version_frontend: ''
 board:
   identifier: CustomBoard
   device: ATSAMV71Q21B-AAB
 details: null
 application: null
-middlewares: {}
+middlewares:
+  FREERTOS_V1000_0:
+    user_label: FREERTOS_V1000_0
+    configuration:
+      freertos_advanced: true
+      freertos_check_for_stack_overflow: false
+      freertos_etaskgetstate: false
+      freertos_generate_run_time_stats: false
+      freertos_max_co_routine_priorities: 2
+      freertos_max_priorities: 5
+      freertos_minimal_stack_size: 64
+      freertos_pctaskgettaskname: false
+      freertos_tick_rate_hz: 1000
+      freertos_timer_task_priority: 2
+      freertos_timer_task_stack_depth: 64
+      freertos_total_heap_size: 2400
+      freertos_use_16_bit_ticks: false
+      freertos_use_application_task_tag_functions: false
+      freertos_use_co_routines: false
+      freertos_use_counting_semaphores: true
+      freertos_use_idle_hook: false
+      freertos_use_malloc_failed_hook: false
+      freertos_use_mutexes: true
+      freertos_use_port_optimised_functions: false
+      freertos_use_preemption: true
+      freertos_use_recursive_mutexes: true
+      freertos_use_stats_formatting_functions: true
+      freertos_use_tick_hook: false
+      freertos_use_tickless_idle: false
+      freertos_use_timers: true
+      freertos_use_trace_facility: true
+      freertos_uxtaskpriorityget: false
+      freertos_vtaskcleanupresources: false
+      freertos_vtaskdelay: true
+      freertos_vtaskdelayuntil: false
+      freertos_vtaskdelete: false
+      freertos_vtaskpriorityset: false
+      freertos_vtasksuspend: true
+      freertos_xresumefromisr: false
+      freertos_xtaskgetcurrenttaskhandle: false
+      freertos_xtaskgetidletaskhandle: false
+      freertos_xtimerpendfunctioncall: false
+    definition: Atmel:RTOS1000:0.0.1::FreeRTOS_v1000_MemMang_4
+    functionality: FreeRTOS_v10.0.0
+    api: RTOS:FreeRTOSv1000:MemMang_4
+    dependencies: {}
+  ETHERNET_PHY_0:
+    user_label: ETHERNET_PHY_0
+    configuration:
+      ieee8023_mii_control_autoneg_en: true
+      ieee8023_mii_control_duplex_mode: full duplex
+      ieee8023_mii_control_isolate_en: false
+      ieee8023_mii_control_loopback_en: false
+      ieee8023_mii_control_powerdown_en: false
+      ieee8023_mii_control_reg0_setting: false
+      ieee8023_mii_control_speed_lsb: 10 Mb/s
+      ieee8023_mii_phy_address: 0
+    definition: Atmel:Ethernet_PHY:0.0.1::Generic_Ethernet_PHY_Driver
+    functionality: Ethernet_PHY
+    api: Ethernet:GenericPHY:Driver
+    dependencies:
+      Communication IO: ETHERNET_MAC_0
 drivers:
   CRYPTOGRAPHY_0:
     user_label: CRYPTOGRAPHY_0
@@ -615,6 +681,473 @@ drivers:
           external: false
           external_frequency: 0
         configuration: {}
+  PWM_0:
+    user_label: PWM_0
+    definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::PWM0::driver_config_definition::PWM::HAL:Driver:PWM
+    functionality: PWM
+    api: HAL:Driver:PWM
+    configuration:
+      channel0_settings: true
+      channel1_settings: true
+      channel2_settings: true
+      channel3_settings: true
+      pwm_channel0_CDTY: 512
+      pwm_channel0_CPRD: 1024
+      pwm_channel0_alignment: The period is left-aligned
+      pwm_channel0_clk_src: Peripheral clock
+      pwm_channel0_disabled_polarity_inverted: false
+      pwm_channel0_fault_config: false
+      pwm_channel0_output_polarity: The OCx output waveform starts at a low level
+      pwm_channel1_CDTY: 512
+      pwm_channel1_CPRD: 1024
+      pwm_channel1_alignment: The period is left-aligned
+      pwm_channel1_clk_src: Peripheral clock
+      pwm_channel1_disabled_polarity_inverted: false
+      pwm_channel1_fault_config: false
+      pwm_channel1_output_polarity: The OCx output waveform starts at a low level
+      pwm_channel1_rfen: false
+      pwm_channel1_trgedge: Falling edge or level 0
+      pwm_channel1_trgfilt: false
+      pwm_channel1_trgmode: External trigger is not enabled.
+      pwm_channel1_trgsrc: By the PWMTRG input
+      pwm_channel1_trigger_enable: false
+      pwm_channel2_CDTY: 512
+      pwm_channel2_CPRD: 1024
+      pwm_channel2_alignment: The period is left-aligned
+      pwm_channel2_clk_src: Peripheral clock
+      pwm_channel2_disabled_polarity_inverted: false
+      pwm_channel2_fault_config: false
+      pwm_channel2_output_polarity: The OCx output waveform starts at a low level
+      pwm_channel2_rfen: false
+      pwm_channel2_trgedge: Falling edge or level 0
+      pwm_channel2_trgfilt: false
+      pwm_channel2_trgmode: External trigger is not enabled.
+      pwm_channel2_trgsrc: By the PWMTRG input
+      pwm_channel2_trigger_enable: false
+      pwm_channel3_CDTY: 512
+      pwm_channel3_CPRD: 1024
+      pwm_channel3_alignment: The period is left-aligned
+      pwm_channel3_clk_src: Peripheral clock
+      pwm_channel3_disabled_polarity_inverted: false
+      pwm_channel3_fault_config: false
+      pwm_channel3_output_polarity: The OCx output waveform starts at a low level
+      pwm_comp_enable0: false
+      pwm_comp_enable1: false
+      pwm_comp_enable2: false
+      pwm_comp_enable3: false
+      pwm_comp_enable4: false
+      pwm_comp_enable5: false
+      pwm_comp_enable6: false
+      pwm_comp_enable7: false
+      pwm_cpr0: 0
+      pwm_cpr1: 0
+      pwm_cpr2: 0
+      pwm_cpr3: 0
+      pwm_cpr4: 0
+      pwm_cpr5: 0
+      pwm_cpr6: 0
+      pwm_cpr7: 0
+      pwm_ctr0: 0
+      pwm_ctr1: 0
+      pwm_ctr2: 0
+      pwm_ctr3: 0
+      pwm_ctr4: 0
+      pwm_ctr5: 0
+      pwm_ctr6: 0
+      pwm_ctr7: 0
+      pwm_cupr0: 0
+      pwm_cupr1: 0
+      pwm_cupr2: 0
+      pwm_cupr3: 0
+      pwm_cupr4: 0
+      pwm_cupr5: 0
+      pwm_cupr6: 0
+      pwm_cupr7: 0
+      pwm_cv0: 0
+      pwm_cv1: 0
+      pwm_cv2: 0
+      pwm_cv3: 0
+      pwm_cv4: 0
+      pwm_cv5: 0
+      pwm_cv6: 0
+      pwm_cv7: 0
+      pwm_cvm0: The comparison value is performed when this counter is incrementing.
+      pwm_cvm1: The comparison value is performed when this counter is incrementing.
+      pwm_cvm2: The comparison value is performed when this counter is incrementing.
+      pwm_cvm3: The comparison value is performed when this counter is incrementing.
+      pwm_cvm4: The comparison value is performed when this counter is incrementing.
+      pwm_cvm5: The comparison value is performed when this counter is incrementing.
+      pwm_cvm6: The comparison value is performed when this counter is incrementing.
+      pwm_cvm7: The comparison value is performed when this counter is incrementing.
+      pwm_diva: 1
+      pwm_divb: 1
+      pwm_elmr0_csel0_enable: false
+      pwm_elmr0_csel1_enable: false
+      pwm_elmr0_csel2_enable: false
+      pwm_elmr0_csel3_enable: false
+      pwm_elmr0_csel4_enable: false
+      pwm_elmr0_csel5_enable: false
+      pwm_elmr0_csel6_enable: false
+      pwm_elmr0_csel7_enable: false
+      pwm_elmr1_csel0_enable: false
+      pwm_elmr1_csel1_enable: false
+      pwm_elmr1_csel2_enable: false
+      pwm_elmr1_csel3_enable: false
+      pwm_elmr1_csel4_enable: false
+      pwm_elmr1_csel5_enable: false
+      pwm_elmr1_csel6_enable: false
+      pwm_elmr1_csel7_enable: false
+      pwm_fault0_enable: false
+      pwm_fault1_enable: false
+      pwm_fault2_enable: false
+      pwm_fault3_enable: false
+      pwm_fault4_enable: false
+      pwm_fault5_enable: false
+      pwm_fault6_enable: false
+      pwm_fault7_enable: false
+      pwm_fmr_ffil_fault0: false
+      pwm_fmr_ffil_fault1: false
+      pwm_fmr_ffil_fault2: false
+      pwm_fmr_ffil_fault3: false
+      pwm_fmr_ffil_fault4: false
+      pwm_fmr_ffil_fault5: false
+      pwm_fmr_ffil_fault6: false
+      pwm_fmr_ffil_fault7: false
+      pwm_fmr_fmod_fault0: The fault 0 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fmod_fault1: The fault 1 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fmod_fault2: The fault 2 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fmod_fault3: The fault 3 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fmod_fault4: The fault 4 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fmod_fault5: The fault 5 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fmod_fault6: The fault 6 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fmod_fault7: The fault 7 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fpol_fault0: true
+      pwm_fmr_fpol_fault1: true
+      pwm_fmr_fpol_fault2: true
+      pwm_fmr_fpol_fault3: true
+      pwm_fmr_fpol_fault4: true
+      pwm_fmr_fpol_fault5: true
+      pwm_fmr_fpol_fault6: true
+      pwm_fmr_fpol_fault7: true
+      pwm_fpe_fpe0_fault0_enable: false
+      pwm_fpe_fpe0_fault1_enable: false
+      pwm_fpe_fpe0_fault2_enable: false
+      pwm_fpe_fpe0_fault3_enable: false
+      pwm_fpe_fpe0_fault4_enable: false
+      pwm_fpe_fpe0_fault5_enable: false
+      pwm_fpe_fpe0_fault6_enable: false
+      pwm_fpe_fpe0_fault7_enable: false
+      pwm_fpe_fpe1_fault0_enable: false
+      pwm_fpe_fpe1_fault1_enable: false
+      pwm_fpe_fpe1_fault2_enable: false
+      pwm_fpe_fpe1_fault3_enable: false
+      pwm_fpe_fpe1_fault4_enable: false
+      pwm_fpe_fpe1_fault5_enable: false
+      pwm_fpe_fpe1_fault6_enable: false
+      pwm_fpe_fpe1_fault7_enable: false
+      pwm_fpe_fpe2_fault0_enable: false
+      pwm_fpe_fpe2_fault1_enable: false
+      pwm_fpe_fpe2_fault2_enable: false
+      pwm_fpe_fpe2_fault3_enable: false
+      pwm_fpe_fpe2_fault4_enable: false
+      pwm_fpe_fpe2_fault5_enable: false
+      pwm_fpe_fpe2_fault6_enable: false
+      pwm_fpe_fpe2_fault7_enable: false
+      pwm_fpe_fpe3_fault0_enable: false
+      pwm_fpe_fpe3_fault1_enable: false
+      pwm_fpe_fpe3_fault2_enable: false
+      pwm_fpe_fpe3_fault3_enable: false
+      pwm_fpe_fpe3_fault4_enable: false
+      pwm_fpe_fpe3_fault5_enable: false
+      pwm_fpe_fpe3_fault6_enable: false
+      pwm_fpe_fpe3_fault7_enable: false
+      pwm_fpv1_fpvh0: Be is forced to high-impedance state
+      pwm_fpv1_fpvh1: Be is forced to high-impedance state
+      pwm_fpv1_fpvh2: Be is forced to high-impedance state
+      pwm_fpv1_fpvh3: Be is forced to high-impedance state
+      pwm_fpv1_fpvl0: Be is forced to high-impedance state
+      pwm_fpv1_fpvl1: Be is forced to high-impedance state
+      pwm_fpv1_fpvl2: Be is forced to high-impedance state
+      pwm_fpv1_fpvl3: Be is forced to high-impedance state
+      pwm_prea: Peripheral clock
+      pwm_preb: Peripheral clock
+    optional_signals:
+    - identifier: PWM_0:PWMH/0
+      pad: PD11
+      mode: Enable
+      configuration: null
+      definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::optional_signal_definition::PWM0.PWMH.0
+      name: PWM0/PWMH/0
+      label: PWMH/0
+    - identifier: PWM_0:PWMH/1
+      pad: PA2
+      mode: Enable
+      configuration: null
+      definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::optional_signal_definition::PWM0.PWMH.1
+      name: PWM0/PWMH/1
+      label: PWMH/1
+    - identifier: PWM_0:PWMH/2
+      pad: PA25
+      mode: Enable
+      configuration: null
+      definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::optional_signal_definition::PWM0.PWMH.2
+      name: PWM0/PWMH/2
+      label: PWMH/2
+    - identifier: PWM_0:PWMH/3
+      pad: PA7
+      mode: Enable
+      configuration: null
+      definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::optional_signal_definition::PWM0.PWMH.3
+      name: PWM0/PWMH/3
+      label: PWMH/3
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: PWM
+          input: Master Clock (MCK)
+          external: false
+          external_frequency: 0
+        configuration:
+          pwm_clock_source: Master Clock (MCK)
+  PWM_1:
+    user_label: PWM_1
+    definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::PWM1::driver_config_definition::PWM::HAL:Driver:PWM
+    functionality: PWM
+    api: HAL:Driver:PWM
+    configuration:
+      channel0_settings: true
+      channel1_settings: true
+      channel2_settings: true
+      channel3_settings: true
+      pwm_channel0_CDTY: 512
+      pwm_channel0_CPRD: 1024
+      pwm_channel0_alignment: The period is left-aligned
+      pwm_channel0_clk_src: Peripheral clock
+      pwm_channel0_disabled_polarity_inverted: false
+      pwm_channel0_fault_config: false
+      pwm_channel0_output_polarity: The OCx output waveform starts at a low level
+      pwm_channel1_CDTY: 512
+      pwm_channel1_CPRD: 1024
+      pwm_channel1_alignment: The period is left-aligned
+      pwm_channel1_clk_src: Peripheral clock
+      pwm_channel1_disabled_polarity_inverted: false
+      pwm_channel1_fault_config: false
+      pwm_channel1_output_polarity: The OCx output waveform starts at a low level
+      pwm_channel1_rfen: false
+      pwm_channel1_trgedge: Falling edge or level 0
+      pwm_channel1_trgfilt: false
+      pwm_channel1_trgmode: External trigger is not enabled.
+      pwm_channel1_trgsrc: By the PWMTRG input
+      pwm_channel1_trigger_enable: false
+      pwm_channel2_CDTY: 512
+      pwm_channel2_CPRD: 1024
+      pwm_channel2_alignment: The period is left-aligned
+      pwm_channel2_clk_src: Peripheral clock
+      pwm_channel2_disabled_polarity_inverted: false
+      pwm_channel2_fault_config: false
+      pwm_channel2_output_polarity: The OCx output waveform starts at a low level
+      pwm_channel2_rfen: false
+      pwm_channel2_trgedge: Falling edge or level 0
+      pwm_channel2_trgfilt: false
+      pwm_channel2_trgmode: External trigger is not enabled.
+      pwm_channel2_trgsrc: By the PWMTRG input
+      pwm_channel2_trigger_enable: false
+      pwm_channel3_CDTY: 512
+      pwm_channel3_CPRD: 1024
+      pwm_channel3_alignment: The period is left-aligned
+      pwm_channel3_clk_src: Peripheral clock
+      pwm_channel3_disabled_polarity_inverted: false
+      pwm_channel3_fault_config: false
+      pwm_channel3_output_polarity: The OCx output waveform starts at a low level
+      pwm_comp_enable0: false
+      pwm_comp_enable1: false
+      pwm_comp_enable2: false
+      pwm_comp_enable3: false
+      pwm_comp_enable4: false
+      pwm_comp_enable5: false
+      pwm_comp_enable6: false
+      pwm_comp_enable7: false
+      pwm_cpr0: 0
+      pwm_cpr1: 0
+      pwm_cpr2: 0
+      pwm_cpr3: 0
+      pwm_cpr4: 0
+      pwm_cpr5: 0
+      pwm_cpr6: 0
+      pwm_cpr7: 0
+      pwm_ctr0: 0
+      pwm_ctr1: 0
+      pwm_ctr2: 0
+      pwm_ctr3: 0
+      pwm_ctr4: 0
+      pwm_ctr5: 0
+      pwm_ctr6: 0
+      pwm_ctr7: 0
+      pwm_cupr0: 0
+      pwm_cupr1: 0
+      pwm_cupr2: 0
+      pwm_cupr3: 0
+      pwm_cupr4: 0
+      pwm_cupr5: 0
+      pwm_cupr6: 0
+      pwm_cupr7: 0
+      pwm_cv0: 0
+      pwm_cv1: 0
+      pwm_cv2: 0
+      pwm_cv3: 0
+      pwm_cv4: 0
+      pwm_cv5: 0
+      pwm_cv6: 0
+      pwm_cv7: 0
+      pwm_cvm0: The comparison value is performed when this counter is incrementing.
+      pwm_cvm1: The comparison value is performed when this counter is incrementing.
+      pwm_cvm2: The comparison value is performed when this counter is incrementing.
+      pwm_cvm3: The comparison value is performed when this counter is incrementing.
+      pwm_cvm4: The comparison value is performed when this counter is incrementing.
+      pwm_cvm5: The comparison value is performed when this counter is incrementing.
+      pwm_cvm6: The comparison value is performed when this counter is incrementing.
+      pwm_cvm7: The comparison value is performed when this counter is incrementing.
+      pwm_diva: 1
+      pwm_divb: 1
+      pwm_elmr0_csel0_enable: false
+      pwm_elmr0_csel1_enable: false
+      pwm_elmr0_csel2_enable: false
+      pwm_elmr0_csel3_enable: false
+      pwm_elmr0_csel4_enable: false
+      pwm_elmr0_csel5_enable: false
+      pwm_elmr0_csel6_enable: false
+      pwm_elmr0_csel7_enable: false
+      pwm_elmr1_csel0_enable: false
+      pwm_elmr1_csel1_enable: false
+      pwm_elmr1_csel2_enable: false
+      pwm_elmr1_csel3_enable: false
+      pwm_elmr1_csel4_enable: false
+      pwm_elmr1_csel5_enable: false
+      pwm_elmr1_csel6_enable: false
+      pwm_elmr1_csel7_enable: false
+      pwm_fault0_enable: false
+      pwm_fault1_enable: false
+      pwm_fault2_enable: false
+      pwm_fault3_enable: false
+      pwm_fault4_enable: false
+      pwm_fault5_enable: false
+      pwm_fault6_enable: false
+      pwm_fault7_enable: false
+      pwm_fmr_ffil_fault0: false
+      pwm_fmr_ffil_fault1: false
+      pwm_fmr_ffil_fault2: false
+      pwm_fmr_ffil_fault3: false
+      pwm_fmr_ffil_fault4: false
+      pwm_fmr_ffil_fault5: false
+      pwm_fmr_ffil_fault6: false
+      pwm_fmr_ffil_fault7: false
+      pwm_fmr_fmod_fault0: The fault 0 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fmod_fault1: The fault 1 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fmod_fault2: The fault 2 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fmod_fault3: The fault 3 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fmod_fault4: The fault 4 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fmod_fault5: The fault 5 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fmod_fault6: The fault 6 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fmod_fault7: The fault 7 is active until the fault condition is removed
+        at the peripheral level.
+      pwm_fmr_fpol_fault0: true
+      pwm_fmr_fpol_fault1: true
+      pwm_fmr_fpol_fault2: true
+      pwm_fmr_fpol_fault3: true
+      pwm_fmr_fpol_fault4: true
+      pwm_fmr_fpol_fault5: true
+      pwm_fmr_fpol_fault6: true
+      pwm_fmr_fpol_fault7: true
+      pwm_fpe_fpe0_fault0_enable: false
+      pwm_fpe_fpe0_fault1_enable: false
+      pwm_fpe_fpe0_fault2_enable: false
+      pwm_fpe_fpe0_fault3_enable: false
+      pwm_fpe_fpe0_fault4_enable: false
+      pwm_fpe_fpe0_fault5_enable: false
+      pwm_fpe_fpe0_fault6_enable: false
+      pwm_fpe_fpe0_fault7_enable: false
+      pwm_fpe_fpe1_fault0_enable: false
+      pwm_fpe_fpe1_fault1_enable: false
+      pwm_fpe_fpe1_fault2_enable: false
+      pwm_fpe_fpe1_fault3_enable: false
+      pwm_fpe_fpe1_fault4_enable: false
+      pwm_fpe_fpe1_fault5_enable: false
+      pwm_fpe_fpe1_fault6_enable: false
+      pwm_fpe_fpe1_fault7_enable: false
+      pwm_fpe_fpe2_fault0_enable: false
+      pwm_fpe_fpe2_fault1_enable: false
+      pwm_fpe_fpe2_fault2_enable: false
+      pwm_fpe_fpe2_fault3_enable: false
+      pwm_fpe_fpe2_fault4_enable: false
+      pwm_fpe_fpe2_fault5_enable: false
+      pwm_fpe_fpe2_fault6_enable: false
+      pwm_fpe_fpe2_fault7_enable: false
+      pwm_fpe_fpe3_fault0_enable: false
+      pwm_fpe_fpe3_fault1_enable: false
+      pwm_fpe_fpe3_fault2_enable: false
+      pwm_fpe_fpe3_fault3_enable: false
+      pwm_fpe_fpe3_fault4_enable: false
+      pwm_fpe_fpe3_fault5_enable: false
+      pwm_fpe_fpe3_fault6_enable: false
+      pwm_fpe_fpe3_fault7_enable: false
+      pwm_fpv1_fpvh0: Be is forced to high-impedance state
+      pwm_fpv1_fpvh1: Be is forced to high-impedance state
+      pwm_fpv1_fpvh2: Be is forced to high-impedance state
+      pwm_fpv1_fpvh3: Be is forced to high-impedance state
+      pwm_fpv1_fpvl0: Be is forced to high-impedance state
+      pwm_fpv1_fpvl1: Be is forced to high-impedance state
+      pwm_fpv1_fpvl2: Be is forced to high-impedance state
+      pwm_fpv1_fpvl3: Be is forced to high-impedance state
+      pwm_prea: Peripheral clock
+      pwm_preb: Peripheral clock
+    optional_signals:
+    - identifier: PWM_1:PWMH/2
+      pad: PA31
+      mode: Enable
+      configuration: null
+      definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::optional_signal_definition::PWM1.PWMH.2
+      name: PWM1/PWMH/2
+      label: PWMH/2
+    - identifier: PWM_1:PWMH/3
+      pad: PA8
+      mode: Enable
+      configuration: null
+      definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::optional_signal_definition::PWM1.PWMH.3
+      name: PWM1/PWMH/3
+      label: PWMH/3
+    - identifier: PWM_1:PWML/2
+      pad: PA23
+      mode: Enable
+      configuration: null
+      definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::optional_signal_definition::PWM1.PWML.2
+      name: PWM1/PWML/2
+      label: PWML/2
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: PWM
+          input: Master Clock (MCK)
+          external: false
+          external_frequency: 0
+        configuration:
+          pwm_clock_source: Master Clock (MCK)
   QUAD_SPI_0:
     user_label: QUAD_SPI_0
     definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::QSPI::driver_config_definition::QSPI.Master::HAL:Driver:QSPI.Sync
@@ -1641,11 +2174,29 @@ pads:
     mode: Analog
     user_label: PD30
     configuration: null
+  PA7:
+    name: PA7
+    definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::pad::PA7
+    mode: Peripheral IO
+    user_label: PA7
+    configuration: null
+  PA8:
+    name: PA8
+    definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::pad::PA8
+    mode: Peripheral IO
+    user_label: PA8
+    configuration: null
   PA13:
     name: PA13
     definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::pad::PA13
     mode: Advanced
     user_label: PA13
+    configuration: null
+  PA23:
+    name: PA23
+    definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::pad::PA23
+    mode: Peripheral IO
+    user_label: PA23
     configuration: null
   PA14:
     name: PA14
@@ -1664,6 +2215,12 @@ pads:
     definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::pad::PD26
     mode: Peripheral IO
     user_label: PD26
+    configuration: null
+  PA25:
+    name: PA25
+    definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::pad::PA25
+    mode: Peripheral IO
+    user_label: PA25
     configuration: null
   PD22:
     name: PD22
@@ -1737,6 +2294,18 @@ pads:
     mode: Peripheral IO
     user_label: PD12
     configuration: null
+  PA2:
+    name: PA2
+    definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::pad::PA2
+    mode: Peripheral IO
+    user_label: PA2
+    configuration: null
+  PD11:
+    name: PD11
+    definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::pad::PD11
+    mode: Peripheral IO
+    user_label: PD11
+    configuration: null
   PA0:
     name: PA0
     definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::pad::PA0
@@ -1760,6 +2329,12 @@ pads:
     definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::pad::PA6
     mode: Peripheral IO
     user_label: PA6
+    configuration: null
+  PA31:
+    name: PA31
+    definition: Atmel:SAMV71B_Drivers:0.0.1::ATSAMV71Q21B-AAB::pad::PA31
+    mode: Peripheral IO
+    user_label: PA31
     configuration: null
   PD7:
     name: PD7
