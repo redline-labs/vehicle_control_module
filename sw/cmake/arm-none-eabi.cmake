@@ -9,3 +9,25 @@ set(CMAKE_C_COMPILER_ID GNU)
 set(CMAKE_CXX_COMPILER_ID GNU)
 set(CMAKE_C_COMPILER_FORCED TRUE)
 set(CMAKE_CXX_COMPILER_FORCED TRUE)
+
+add_compile_options(
+    -mthumb
+    -mcpu=cortex-m7
+    -mfloat-abi=hard
+    -mfpu=fpv5-d16
+)
+
+add_link_options(
+    -mthumb
+    -mcpu=cortex-m7
+    -mfloat-abi=hard
+    -mfpu=fpv5-d16
+
+    -T${CMAKE_SOURCE_DIR}/ld/samv71q21b_flash.ld
+
+    -Wl,--start-group
+    -Wl,--end-group
+    -Wl,--gc-sections
+
+    --specs=nano.specs
+)

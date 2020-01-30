@@ -9,21 +9,15 @@ if(NOT CMAKE_BUILD_TYPE)
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
 endif()
 
-add_compile_options(
-    -mthumb -mcpu=cortex-m7
-    -mfloat-abi=hard
-    -mfpu=fpv5-d16
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-    $<$<COMPILE_LANGUAGE:C>:-std=c11>
-    $<$<COMPILE_LANGUAGE:CXX>:-std=c++17>
-    $<$<COMPILE_LANGUAGE:CXX>:-fms-extensions>
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+add_compile_options(
     $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
     $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
-    $<$<COMPILE_LANGUAGE:CXX>:-fno-use-cxa-atexit>
-    $<$<COMPILE_LANGUAGE:CXX>:-fno-threadsafe-statics>
-    -fstrict-volatile-bitfields
-    -ffunction-sections
-    -fno-threadsafe-statics
 
     -Werror
     -Wall
@@ -39,3 +33,5 @@ add_compile_options(
     -Wsuggest-final-methods
     -pedantic
 )
+
+add_subdirectory(src)
