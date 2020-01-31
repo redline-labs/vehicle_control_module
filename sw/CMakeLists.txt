@@ -19,16 +19,19 @@ add_compile_options(
     $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
     $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
 
+    $<$<COMPILE_LANGUAGE:CXX>:-Wold-style-cast>
+    $<$<COMPILE_LANGUAGE:CXX>:-Wsuggest-override>
+
     -Werror
     -Wall
     -Wextra
-    -Wcast-align
-    -Wconversion
+    #-Wcast-align
+    #-Wconversion
     -Wsign-conversion
-    -Wold-style-cast
+
     -Wshadow
     -Wlogical-op
-    -Wsuggest-override
+
     -Wsuggest-final-types
     -Wsuggest-final-methods
     -pedantic
