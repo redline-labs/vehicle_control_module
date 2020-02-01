@@ -20,7 +20,7 @@ Based on the Microchip [ATSAMV71Q21](https://www.microchip.com/wwwproducts/en/AT
 * (1) 100BASE-TX channel via [KSZ8061MNX](https://www.microchip.com/wwwproducts/en/KSZ8061) to support debug with a laptop.
 * (18) High Side drivers via [BTS50015-1TAD](https://www.infineon.com/cms/en/product/power/smart-low-side-high-side-switches/automotive-smart-high-side-switch-profet/power-profet/bts50015-1tad/).
 * (2) RS-232 serial channels to connect GPS receivers and legacy IMUs.
-* (TBD) Digital Inputs.
+* (8) Digital Inputs.
 
 ## Prerequisites
 ### MacOS

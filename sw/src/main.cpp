@@ -3,10 +3,9 @@
 #include <FreeRTOS.h>
 #include <task.h>
 
-int main(int argc, char** argv)
+int main()
 {
-    (void)argc;
-    (void)argv;
-
     vTaskStartScheduler();
+
+    return -1;
 }

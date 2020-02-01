@@ -1,8 +1,13 @@
 include_directories(
     include/
 
+    # FreeRTOS.
     FreeRTOS/include/
     FreeRTOS/portable/GCC/ARM_CM7/r0p1/
+
+    # CMSIS.
+    cmsis/samv71b/include/
+    cmsis/Core/Include/
 )
 
 
@@ -19,7 +24,16 @@ add_executable(${PROJECT_NAME}
     FreeRTOS/stream_buffer.c
     FreeRTOS/tasks.c
     FreeRTOS/timers.c
+
+    # CMSIS.
+    cmsis/samv71b/gcc/startup_samv71q21b.c
+
+    # HAL.
+    hal/utils/src/utils_syscalls.c
+
 )
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE __ATSAMV71Q21B__)
 
 set_target_properties(${PROJECT_NAME}
     # Force a .elf extension on the output file.

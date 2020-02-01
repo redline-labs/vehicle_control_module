@@ -34,7 +34,7 @@ add_compile_options(
 
     -Wsuggest-final-types
     -Wsuggest-final-methods
-    -pedantic
+    #-pedantic
 )
 
 add_subdirectory(src)

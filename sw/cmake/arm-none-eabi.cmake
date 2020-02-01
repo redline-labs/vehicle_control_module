@@ -23,11 +23,10 @@ add_link_options(
     -mfloat-abi=hard
     -mfpu=fpv5-d16
 
-    -T${CMAKE_SOURCE_DIR}/ld/samv71q21b_flash.ld
+    -T${CMAKE_SOURCE_DIR}/src/cmsis/samv71b/gcc/samv71q21b_flash.ld
 
-    -Wl,--start-group
-    -Wl,--end-group
     -Wl,--gc-sections
 
-    --specs=nano.specs
+    -specs=nano.specs
+    -specs=nosys.specs
 )
