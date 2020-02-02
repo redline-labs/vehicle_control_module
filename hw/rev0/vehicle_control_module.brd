@@ -7642,40 +7642,35 @@ design rules under a new name.</description>
 <contactref element="IC1" pad="D1"/>
 <wire x1="1.962" y1="-3.95" x2="17.66" y2="33.28" width="0" layer="19" extent="1-1"/>
 </signal>
-<signal name="RMII0_RXER">
-<contactref element="IC2" pad="119"/>
-<contactref element="IC1" pad="H2"/>
-<wire x1="16.45" y1="-1.962" x2="18.46" y2="30.08" width="0" layer="19" extent="1-1"/>
-</signal>
 <signal name="RMII0_RXD1">
-<contactref element="IC2" pad="121"/>
 <contactref element="IC1" pad="F2"/>
-<wire x1="15.45" y1="-1.962" x2="18.46" y2="31.68" width="0" layer="19" extent="1-1"/>
+<contactref element="IC2" pad="128"/>
+<wire x1="11.95" y1="-1.962" x2="18.46" y2="31.68" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="RMII0_RXD0">
-<contactref element="IC2" pad="125"/>
 <contactref element="IC1" pad="E1"/>
-<wire x1="13.45" y1="-1.962" x2="17.66" y2="32.48" width="0" layer="19" extent="1-1"/>
+<contactref element="IC2" pad="131"/>
+<wire x1="10.45" y1="-1.962" x2="17.66" y2="32.48" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="RMII0_CRSDV">
-<contactref element="IC2" pad="126"/>
 <contactref element="IC1" pad="G1"/>
-<wire x1="12.95" y1="-1.962" x2="17.66" y2="30.88" width="0" layer="19" extent="1-1"/>
+<contactref element="IC2" pad="132"/>
+<wire x1="9.95" y1="-1.962" x2="17.66" y2="30.88" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="RMII0_TXD1">
-<contactref element="IC2" pad="128"/>
 <contactref element="IC1" pad="B1"/>
-<wire x1="11.95" y1="-1.962" x2="17.66" y2="34.88" width="0" layer="19" extent="1-1"/>
+<contactref element="IC2" pad="121"/>
+<wire x1="15.45" y1="-1.962" x2="17.66" y2="34.88" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="RMII0_TXD0">
-<contactref element="IC2" pad="131"/>
 <contactref element="IC1" pad="A2"/>
-<wire x1="10.45" y1="-1.962" x2="18.46" y2="35.68" width="0" layer="19" extent="1-1"/>
+<contactref element="IC2" pad="125"/>
+<wire x1="13.45" y1="-1.962" x2="18.46" y2="35.68" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="RMII0_TXEN">
-<contactref element="IC2" pad="132"/>
 <contactref element="IC1" pad="D2"/>
-<wire x1="9.95" y1="-1.962" x2="18.46" y2="33.28" width="0" layer="19" extent="1-1"/>
+<contactref element="IC2" pad="126"/>
+<wire x1="12.95" y1="-1.962" x2="18.46" y2="33.28" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="I2C0_TWCK">
 <contactref element="IC2" pad="77"/>
@@ -10259,6 +10254,11 @@ design rules under a new name.</description>
 <wire x1="1.962" y1="-19.95" x2="1.962" y2="-17.95" width="0" layer="19" extent="1-1"/>
 <wire x1="10.45" y1="-23.438" x2="1.962" y2="-19.95" width="0" layer="19" extent="1-1"/>
 <wire x1="23.438" y1="-17.45" x2="23.438" y2="-4.45" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="RMII0_TXER">
+<contactref element="IC1" pad="A3"/>
+<contactref element="IC2" pad="119"/>
+<wire x1="16.45" y1="-1.962" x2="19.26" y2="35.68" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 <mfgpreviewcolors>
