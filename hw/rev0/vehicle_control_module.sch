@@ -1322,6 +1322,30 @@
 <wire x1="-3.4" y1="-6.4" x2="-3.4" y2="6.4" width="0.2" layer="21"/>
 <wire x1="-5.7" y1="6.415" x2="-3.75" y2="6.415" width="0.2" layer="21"/>
 </package>
+<package name="ABM8AIG12000MHZ12D2ZT">
+<description>&lt;b&gt;ABM8AIG-12.000MHz-12-D2Z-T-1&lt;/b&gt;&lt;br&gt;
+</description>
+<smd name="1" x="-1.15" y="-0.95" dx="1.3" dy="1.1" layer="1"/>
+<smd name="2" x="1.15" y="-0.95" dx="1.3" dy="1.1" layer="1"/>
+<smd name="3" x="1.15" y="0.95" dx="1.3" dy="1.1" layer="1"/>
+<smd name="4" x="-1.15" y="0.95" dx="1.3" dy="1.1" layer="1"/>
+<text x="0" y="0" size="1.27" layer="25" align="center">&gt;NAME</text>
+<text x="0" y="0" size="1.27" layer="27" align="center">&gt;VALUE</text>
+<wire x1="-1.6" y1="1.25" x2="1.6" y2="1.25" width="0.2" layer="51"/>
+<wire x1="1.6" y1="1.25" x2="1.6" y2="-1.25" width="0.2" layer="51"/>
+<wire x1="1.6" y1="-1.25" x2="-1.6" y2="-1.25" width="0.2" layer="51"/>
+<wire x1="-1.6" y1="-1.25" x2="-1.6" y2="1.25" width="0.2" layer="51"/>
+<wire x1="-2.8" y1="2.5" x2="2.8" y2="2.5" width="0.1" layer="51"/>
+<wire x1="2.8" y1="2.5" x2="2.8" y2="-2.5" width="0.1" layer="51"/>
+<wire x1="2.8" y1="-2.5" x2="-2.8" y2="-2.5" width="0.1" layer="51"/>
+<wire x1="-2.8" y1="-2.5" x2="-2.8" y2="2.5" width="0.1" layer="51"/>
+<wire x1="-0.25" y1="1.25" x2="0.25" y2="1.25" width="0.1" layer="21"/>
+<wire x1="-0.25" y1="-1.25" x2="0.25" y2="-1.25" width="0.1" layer="21"/>
+<wire x1="-1.1" y1="-1.9" x2="-1.1" y2="-1.9" width="0.2" layer="21"/>
+<wire x1="-1.1" y1="-1.9" x2="-1.1" y2="-2.1" width="0.2" layer="21" curve="180"/>
+<wire x1="-1.1" y1="-2.1" x2="-1.1" y2="-2.1" width="0.2" layer="21"/>
+<wire x1="-1.1" y1="-2.1" x2="-1.1" y2="-1.9" width="0.2" layer="21" curve="180"/>
+</package>
 </packages>
 <symbols>
 <symbol name="SJA1105TELY">
@@ -2254,6 +2278,18 @@
 <pin name="Y5" x="27.94" y="-17.78" length="middle" rot="R180"/>
 <pin name="Y6" x="27.94" y="-20.32" length="middle" rot="R180"/>
 <pin name="Y7" x="27.94" y="-22.86" length="middle" rot="R180"/>
+</symbol>
+<symbol name="ABM8AIG-12.000MHZ-12-D2Z-T">
+<wire x1="5.08" y1="2.54" x2="35.56" y2="2.54" width="0.254" layer="94"/>
+<wire x1="35.56" y1="-5.08" x2="35.56" y2="2.54" width="0.254" layer="94"/>
+<wire x1="35.56" y1="-5.08" x2="5.08" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="5.08" y1="2.54" x2="5.08" y2="-5.08" width="0.254" layer="94"/>
+<text x="36.83" y="7.62" size="1.778" layer="95" align="center-left">&gt;NAME</text>
+<text x="36.83" y="5.08" size="1.778" layer="96" align="center-left">&gt;VALUE</text>
+<pin name="CRYSTAL_1" x="0" y="-2.54" length="middle"/>
+<pin name="GND_1" x="40.64" y="-2.54" length="middle" rot="R180"/>
+<pin name="CRYSTAL_2" x="40.64" y="0" length="middle" rot="R180"/>
+<pin name="GND_2" x="0" y="0" length="middle"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -3710,6 +3746,35 @@ Source: &lt;a href="https://assets.nexperia.com/documents/data-sheet/74HC_HCT754
 <attribute name="MANUFACTURER_PART_NUMBER" value="74HC7541D-Q100J" constant="no"/>
 <attribute name="MOUSER_PART_NUMBER" value="771-74HC7541D-Q100J" constant="no"/>
 <attribute name="MOUSER_PRICE-STOCK" value="https://www.mouser.com/Search/Refine.aspx?Keyword=771-74HC7541D-Q100J" constant="no"/>
+<attribute name="RS_PART_NUMBER" value="" constant="no"/>
+<attribute name="RS_PRICE-STOCK" value="" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="ABM8AIG-12.000MHZ-12-D2Z-T" prefix="Y">
+<description>&lt;b&gt;ABRACON - ABM8AIG-12.000MHZ-12-D2Z-T - CRYSTAL, AECQ200, 12MHZ, 12PF, 3.2X2.5MM&lt;/b&gt;&lt;p&gt;
+Source: &lt;a href="https://www.mouser.com/datasheet/2/3/ABM8AIG-783590.pdf"&gt; Datasheet &lt;/a&gt;</description>
+<gates>
+<gate name="G$1" symbol="ABM8AIG-12.000MHZ-12-D2Z-T" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="ABM8AIG12000MHZ12D2ZT">
+<connects>
+<connect gate="G$1" pin="CRYSTAL_1" pad="1"/>
+<connect gate="G$1" pin="CRYSTAL_2" pad="3"/>
+<connect gate="G$1" pin="GND_1" pad="2"/>
+<connect gate="G$1" pin="GND_2" pad="4"/>
+</connects>
+<technologies>
+<technology name="">
+<attribute name="DESCRIPTION" value="ABRACON - ABM8AIG-12.000MHZ-12-D2Z-T - CRYSTAL, AECQ200, 12MHZ, 12PF, 3.2X2.5MM" constant="no"/>
+<attribute name="HEIGHT" value="0.8mm" constant="no"/>
+<attribute name="MANUFACTURER_NAME" value="ABRACON" constant="no"/>
+<attribute name="MANUFACTURER_PART_NUMBER" value="ABM8AIG-12.000MHz-12-D2Z-T" constant="no"/>
+<attribute name="MOUSER_PART_NUMBER" value="815-ABM8AIG1212D2ZT" constant="no"/>
+<attribute name="MOUSER_PRICE-STOCK" value="https://www.mouser.com/Search/Refine.aspx?Keyword=815-ABM8AIG1212D2ZT" constant="no"/>
 <attribute name="RS_PART_NUMBER" value="" constant="no"/>
 <attribute name="RS_PRICE-STOCK" value="" constant="no"/>
 </technology>
@@ -16075,6 +16140,7 @@ In this library the device names are the same as the pin names of the symbols, t
 <part name="GND49" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="R199" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="10k"/>
 <part name="GND313" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="Y2" library="samacsys" deviceset="ABM8AIG-12.000MHZ-12-D2Z-T" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -17241,6 +17307,10 @@ In this library the device names are the same as the pin names of the symbols, t
 </instance>
 <instance part="GND313" gate="1" x="375.92" y="177.8" smashed="yes">
 <attribute name="VALUE" x="373.38" y="175.26" size="1.778" layer="96"/>
+</instance>
+<instance part="Y2" gate="G$1" x="292.1" y="66.04" smashed="yes">
+<attribute name="NAME" x="328.93" y="73.66" size="1.778" layer="95" align="center-left"/>
+<attribute name="VALUE" x="328.93" y="71.12" size="1.778" layer="96" align="center-left"/>
 </instance>
 </instances>
 <busses>

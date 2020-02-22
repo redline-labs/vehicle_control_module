@@ -710,6 +710,30 @@
 <wire x1="-4.3" y1="0" x2="-4.3" y2="0" width="0.2" layer="21"/>
 <wire x1="-4.3" y1="0" x2="-4.2" y2="0" width="0.2" layer="21" curve="180"/>
 </package>
+<package name="ABM8AIG12000MHZ12D2ZT">
+<description>&lt;b&gt;ABM8AIG-12.000MHz-12-D2Z-T-1&lt;/b&gt;&lt;br&gt;
+</description>
+<smd name="1" x="-1.15" y="-0.95" dx="1.3" dy="1.1" layer="1"/>
+<smd name="2" x="1.15" y="-0.95" dx="1.3" dy="1.1" layer="1"/>
+<smd name="3" x="1.15" y="0.95" dx="1.3" dy="1.1" layer="1"/>
+<smd name="4" x="-1.15" y="0.95" dx="1.3" dy="1.1" layer="1"/>
+<text x="0" y="0" size="1.27" layer="25" align="center">&gt;NAME</text>
+<text x="0" y="0" size="1.27" layer="27" align="center">&gt;VALUE</text>
+<wire x1="-1.6" y1="1.25" x2="1.6" y2="1.25" width="0.2" layer="51"/>
+<wire x1="1.6" y1="1.25" x2="1.6" y2="-1.25" width="0.2" layer="51"/>
+<wire x1="1.6" y1="-1.25" x2="-1.6" y2="-1.25" width="0.2" layer="51"/>
+<wire x1="-1.6" y1="-1.25" x2="-1.6" y2="1.25" width="0.2" layer="51"/>
+<wire x1="-2.8" y1="2.5" x2="2.8" y2="2.5" width="0.1" layer="51"/>
+<wire x1="2.8" y1="2.5" x2="2.8" y2="-2.5" width="0.1" layer="51"/>
+<wire x1="2.8" y1="-2.5" x2="-2.8" y2="-2.5" width="0.1" layer="51"/>
+<wire x1="-2.8" y1="-2.5" x2="-2.8" y2="2.5" width="0.1" layer="51"/>
+<wire x1="-0.25" y1="1.25" x2="0.25" y2="1.25" width="0.1" layer="21"/>
+<wire x1="-0.25" y1="-1.25" x2="0.25" y2="-1.25" width="0.1" layer="21"/>
+<wire x1="-1.1" y1="-1.9" x2="-1.1" y2="-1.9" width="0.2" layer="21"/>
+<wire x1="-1.1" y1="-1.9" x2="-1.1" y2="-2.1" width="0.2" layer="21" curve="180"/>
+<wire x1="-1.1" y1="-2.1" x2="-1.1" y2="-2.1" width="0.2" layer="21"/>
+<wire x1="-1.1" y1="-2.1" x2="-1.1" y2="-1.9" width="0.2" layer="21" curve="180"/>
+</package>
 </packages>
 <symbols>
 <symbol name="ATSAMV71Q21B-AABT">
@@ -1177,6 +1201,18 @@
 <pin name="6" x="20.32" y="-5.08" length="middle" rot="R180"/>
 <pin name="7" x="0" y="-7.62" length="middle"/>
 <pin name="8" x="20.32" y="-7.62" length="middle" rot="R180"/>
+</symbol>
+<symbol name="ABM8AIG-12.000MHZ-12-D2Z-T">
+<wire x1="5.08" y1="2.54" x2="35.56" y2="2.54" width="0.254" layer="94"/>
+<wire x1="35.56" y1="-5.08" x2="35.56" y2="2.54" width="0.254" layer="94"/>
+<wire x1="35.56" y1="-5.08" x2="5.08" y2="-5.08" width="0.254" layer="94"/>
+<wire x1="5.08" y1="2.54" x2="5.08" y2="-5.08" width="0.254" layer="94"/>
+<text x="36.83" y="7.62" size="1.778" layer="95" align="center-left">&gt;NAME</text>
+<text x="36.83" y="5.08" size="1.778" layer="96" align="center-left">&gt;VALUE</text>
+<pin name="CRYSTAL_1" x="0" y="-2.54" length="middle"/>
+<pin name="GND_1" x="40.64" y="-2.54" length="middle" rot="R180"/>
+<pin name="CRYSTAL_2" x="40.64" y="0" length="middle" rot="R180"/>
+<pin name="GND_2" x="0" y="0" length="middle"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -1926,6 +1962,35 @@ Source: &lt;a href="https://componentsearchengine.com/Datasheets/1/TBL009-254-04
 <attribute name="MANUFACTURER_PART_NUMBER" value="TBL009-254-04GY-2GY" constant="no"/>
 <attribute name="MOUSER_PART_NUMBER" value="490-TBL00925404GY2GY" constant="no"/>
 <attribute name="MOUSER_PRICE-STOCK" value="https://www.mouser.com/Search/Refine.aspx?Keyword=490-TBL00925404GY2GY" constant="no"/>
+<attribute name="RS_PART_NUMBER" value="" constant="no"/>
+<attribute name="RS_PRICE-STOCK" value="" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="ABM8AIG-12.000MHZ-12-D2Z-T" prefix="Y">
+<description>&lt;b&gt;ABRACON - ABM8AIG-12.000MHZ-12-D2Z-T - CRYSTAL, AECQ200, 12MHZ, 12PF, 3.2X2.5MM&lt;/b&gt;&lt;p&gt;
+Source: &lt;a href="https://www.mouser.com/datasheet/2/3/ABM8AIG-783590.pdf"&gt; Datasheet &lt;/a&gt;</description>
+<gates>
+<gate name="G$1" symbol="ABM8AIG-12.000MHZ-12-D2Z-T" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="ABM8AIG12000MHZ12D2ZT">
+<connects>
+<connect gate="G$1" pin="CRYSTAL_1" pad="1"/>
+<connect gate="G$1" pin="CRYSTAL_2" pad="3"/>
+<connect gate="G$1" pin="GND_1" pad="2"/>
+<connect gate="G$1" pin="GND_2" pad="4"/>
+</connects>
+<technologies>
+<technology name="">
+<attribute name="DESCRIPTION" value="ABRACON - ABM8AIG-12.000MHZ-12-D2Z-T - CRYSTAL, AECQ200, 12MHZ, 12PF, 3.2X2.5MM" constant="no"/>
+<attribute name="HEIGHT" value="0.8mm" constant="no"/>
+<attribute name="MANUFACTURER_NAME" value="ABRACON" constant="no"/>
+<attribute name="MANUFACTURER_PART_NUMBER" value="ABM8AIG-12.000MHz-12-D2Z-T" constant="no"/>
+<attribute name="MOUSER_PART_NUMBER" value="815-ABM8AIG1212D2ZT" constant="no"/>
+<attribute name="MOUSER_PRICE-STOCK" value="https://www.mouser.com/Search/Refine.aspx?Keyword=815-ABM8AIG1212D2ZT" constant="no"/>
 <attribute name="RS_PART_NUMBER" value="" constant="no"/>
 <attribute name="RS_PRICE-STOCK" value="" constant="no"/>
 </technology>
@@ -13525,6 +13590,13 @@ In this library the device names are the same as the pin names of the symbols, t
 <part name="GND39" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND40" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="R26" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="R-US_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="0"/>
+<part name="Y2" library="samacsys" deviceset="ABM8AIG-12.000MHZ-12-D2Z-T" device=""/>
+<part name="C21" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="12pF"/>
+<part name="C22" library="rcl" library_urn="urn:adsk.eagle:library:334" deviceset="C-US" device="C0603" package3d_urn="urn:adsk.eagle:package:23616/2" value="12pF"/>
+<part name="GND41" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="GND42" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="GND43" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="GND44" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -14437,6 +14509,30 @@ In this library the device names are the same as the pin names of the symbols, t
 <attribute name="NAME" x="372.11" y="196.6214" size="1.778" layer="95" rot="R180"/>
 <attribute name="VALUE" x="372.11" y="201.422" size="1.778" layer="96" rot="R180"/>
 </instance>
+<instance part="Y2" gate="G$1" x="251.46" y="48.26" smashed="yes">
+<attribute name="NAME" x="257.81" y="55.88" size="1.778" layer="95" align="center-left"/>
+<attribute name="VALUE" x="257.81" y="53.34" size="1.778" layer="96" align="center-left"/>
+</instance>
+<instance part="C21" gate="G$1" x="241.3" y="40.64" smashed="yes">
+<attribute name="NAME" x="242.316" y="41.275" size="1.778" layer="95"/>
+<attribute name="VALUE" x="242.316" y="36.449" size="1.778" layer="96"/>
+</instance>
+<instance part="C22" gate="G$1" x="302.26" y="40.64" smashed="yes">
+<attribute name="NAME" x="303.276" y="41.275" size="1.778" layer="95"/>
+<attribute name="VALUE" x="303.276" y="36.449" size="1.778" layer="96"/>
+</instance>
+<instance part="GND41" gate="1" x="241.3" y="33.02" smashed="yes">
+<attribute name="VALUE" x="238.76" y="30.48" size="1.778" layer="96"/>
+</instance>
+<instance part="GND42" gate="1" x="302.26" y="33.02" smashed="yes">
+<attribute name="VALUE" x="299.72" y="30.48" size="1.778" layer="96"/>
+</instance>
+<instance part="GND43" gate="1" x="248.92" y="33.02" smashed="yes">
+<attribute name="VALUE" x="246.38" y="30.48" size="1.778" layer="96"/>
+</instance>
+<instance part="GND44" gate="1" x="294.64" y="33.02" smashed="yes">
+<attribute name="VALUE" x="292.1" y="30.48" size="1.778" layer="96"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -14959,6 +15055,26 @@ In this library the device names are the same as the pin names of the symbols, t
 <pinref part="R25" gate="G$1" pin="2"/>
 <pinref part="GND40" gate="1" pin="GND"/>
 </segment>
+<segment>
+<pinref part="C21" gate="G$1" pin="2"/>
+<pinref part="GND41" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="C22" gate="G$1" pin="2"/>
+<pinref part="GND42" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="Y2" gate="G$1" pin="GND_2"/>
+<wire x1="251.46" y1="48.26" x2="248.92" y2="48.26" width="0.1524" layer="91"/>
+<pinref part="GND43" gate="1" pin="GND"/>
+<wire x1="248.92" y1="48.26" x2="248.92" y2="35.56" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="Y2" gate="G$1" pin="GND_1"/>
+<wire x1="292.1" y1="45.72" x2="294.64" y2="45.72" width="0.1524" layer="91"/>
+<pinref part="GND44" gate="1" pin="GND"/>
+<wire x1="294.64" y1="45.72" x2="294.64" y2="35.56" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="CAN0_RW_MODE" class="0">
 <segment>
@@ -15162,6 +15278,38 @@ In this library the device names are the same as the pin names of the symbols, t
 <pinref part="R26" gate="G$1" pin="1"/>
 <wire x1="373.38" y1="198.12" x2="401.32" y2="198.12" width="0.1524" layer="91"/>
 <label x="401.32" y="198.12" size="1.778" layer="95" rot="MR0"/>
+</segment>
+</net>
+<net name="OSCO" class="0">
+<segment>
+<pinref part="Y2" gate="G$1" pin="CRYSTAL_1"/>
+<wire x1="251.46" y1="45.72" x2="241.3" y2="45.72" width="0.1524" layer="91"/>
+<pinref part="C21" gate="G$1" pin="1"/>
+<wire x1="241.3" y1="45.72" x2="233.68" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="241.3" y1="43.18" x2="241.3" y2="45.72" width="0.1524" layer="91"/>
+<junction x="241.3" y="45.72"/>
+<label x="231.14" y="45.72" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="IC2" gate="G$1" pin="PB8"/>
+<wire x1="124.46" y1="198.12" x2="124.46" y2="231.14" width="0.1524" layer="91"/>
+<label x="124.46" y="231.14" size="1.778" layer="95" rot="MR270"/>
+</segment>
+</net>
+<net name="OSCI" class="0">
+<segment>
+<pinref part="Y2" gate="G$1" pin="CRYSTAL_2"/>
+<wire x1="292.1" y1="48.26" x2="302.26" y2="48.26" width="0.1524" layer="91"/>
+<pinref part="C22" gate="G$1" pin="1"/>
+<wire x1="302.26" y1="48.26" x2="312.42" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="302.26" y1="43.18" x2="302.26" y2="48.26" width="0.1524" layer="91"/>
+<junction x="302.26" y="48.26"/>
+<label x="312.42" y="48.26" size="1.778" layer="95" rot="MR0"/>
+</segment>
+<segment>
+<pinref part="IC2" gate="G$1" pin="PB9"/>
+<wire x1="121.92" y1="198.12" x2="121.92" y2="231.14" width="0.1524" layer="91"/>
+<label x="121.92" y="231.14" size="1.778" layer="95" rot="MR270"/>
 </segment>
 </net>
 </nets>
