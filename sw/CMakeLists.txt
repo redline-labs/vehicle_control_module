@@ -1,19 +1,43 @@
 # Based on https://github.com/cortexm/baremetal/blob/master/CMakeLists.txt
 cmake_minimum_required(VERSION 3.0)
 
+# https://github.com/cortexm/baremetal
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR arm)
+
+set(CMAKE_C_COMPILER arm-none-eabi-gcc)
+set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
+set(CMAKE_C_COMPILER_ID GNU)
+set(CMAKE_CXX_COMPILER_ID GNU)
+set(CMAKE_C_COMPILER_FORCED TRUE)
+set(CMAKE_CXX_COMPILER_FORCED TRUE)
+
+set(CMAKE_C_FLAGS_DEBUG "" CACHE STRING "")
+set(CMAKE_CXX_FLAGS_DEBUG "" CACHE STRING "")
+set(CMAKE_C_FLAGS_RELEASE "" CACHE STRING "")
+set(CMAKE_CXX_FLAGS_RELEASE "" CACHE STRING "")
+
 # project name
 project(vehicle_control_module)
-
-# Default to `Release` build type.
-if(NOT CMAKE_BUILD_TYPE)
-    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
-endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
+
+add_link_options(
+    -T${CMAKE_SOURCE_DIR}/src/samv71b/gcc/samv71q21b_flash.ld
+
+    -Wl,--gc-sections
+
+    -specs=nano.specs
+
+    -mthumb
+    -mcpu=cortex-m7
+    -mfloat-abi=hard
+    -mfpu=fpv5-d16
+)
 
 add_compile_options(
     $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
@@ -22,12 +46,12 @@ add_compile_options(
     $<$<COMPILE_LANGUAGE:CXX>:-Wold-style-cast>
     $<$<COMPILE_LANGUAGE:CXX>:-Wsuggest-override>
 
-    -Werror
+    #-Werror
     -Wall
-    -Wextra
+    #-Wextra
     #-Wcast-align
     #-Wconversion
-    -Wsign-conversion
+    #-Wsign-conversion
 
     -Wshadow
     -Wlogical-op
@@ -35,6 +59,22 @@ add_compile_options(
     -Wsuggest-final-types
     -Wsuggest-final-methods
     #-pedantic
+
+    -D__ATSAMV71Q21B__
+
+    # Debugging.
+    -g3
+    -DNDEBUG
+
+    # Optimization
+    -O1
+    -ffunction-sections
+    -mlong-calls
+
+    -mthumb
+    -mcpu=cortex-m7
+    -mfloat-abi=hard
+    -mfpu=fpv5-d16
 )
 
 add_subdirectory(src)

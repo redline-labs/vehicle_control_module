@@ -31,7 +31,6 @@ brew install arm-gcc-bin
 brew install cmake
 ```
 
-
 ## Building
 ```
 # Jump into the sw directory, create a build dir, and then jump into that.
@@ -40,8 +39,12 @@ mkdir build
 cd build
 
 # Run CMake specifying the toolchain file.
-cmake -D CMAKE_TOOLCHAIN_FILE=../cmake/arm-none-eabi.cmake ..
+cmake ..
 
 # Build!
 make
 ```
+
+## Debugging
+A configuration script under `conf/j-link` can be used with Segger Ozone to load the generated ELF on target and debug.
+

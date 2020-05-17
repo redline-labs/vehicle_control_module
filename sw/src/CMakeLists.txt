@@ -1,13 +1,21 @@
 include_directories(
-    include/
+    .
+    config
 
     # FreeRTOS.
-    FreeRTOS/include/
-    FreeRTOS/portable/GCC/ARM_CM7/r0p1/
+    FreeRTOS/include
+    FreeRTOS/portable/GCC/ARM_CM7/r0p1
 
     # CMSIS.
-    cmsis/samv71b/include/
-    cmsis/Core/Include/
+    CMSIS/Core/Include
+    samv71b/include
+
+    hal/include
+    hal/utils/include
+    hpl/core
+    hpl/pio
+    hpl/pmc
+    hri
 )
 
 
@@ -17,6 +25,7 @@ add_executable(${PROJECT_NAME}
     # FreeRTOS
     FreeRTOS/portable/GCC/ARM_CM7/r0p1/port.c
     FreeRTOS/portable/MemMang/heap_4.c
+
     FreeRTOS/croutine.c
     FreeRTOS/event_groups.c
     FreeRTOS/list.c
@@ -25,15 +34,22 @@ add_executable(${PROJECT_NAME}
     FreeRTOS/tasks.c
     FreeRTOS/timers.c
 
-    # CMSIS.
-    cmsis/samv71b/gcc/startup_samv71q21b.c
+    driver_init.c
+    #rtos_port.c
 
-    # HAL.
-    hal/utils/src/utils_syscalls.c
+    hal/src/hal_atomic.c
+    hal/src/hal_delay.c
+    hal/src/hal_gpio.c
+    hal/src/hal_init.c
+    hal/src/hal_io.c
+    hal/src/hal_sleep.c
+    hpl/core/hpl_core_m7_base.c
+    hpl/core/hpl_init.c
+    hpl/pmc/hpl_pmc.c
+    hpl/pmc/hpl_sleep.c
 
+    samv71b/gcc/startup_samv71q21b.c
 )
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE __ATSAMV71Q21B__)
 
 set_target_properties(${PROJECT_NAME}
     # Force a .elf extension on the output file.
@@ -48,4 +64,10 @@ set_target_properties(${PROJECT_NAME}
 add_custom_target(size
     arm-none-eabi-size $<TARGET_FILE:${PROJECT_NAME}>
     DEPENDS ${PROJECT_NAME}
+)
+
+add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND arm-none-eabi-objcopy -O ihex -R .eeprom -R .fuse -R .lock -R .signature $<TARGET_FILE:${PROJECT_NAME}> $<TARGET_FILE_DIR:${PROJECT_NAME}>/$<TARGET_FILE_BASE_NAME:${PROJECT_NAME}>.hex
 )
