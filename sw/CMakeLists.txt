@@ -20,7 +20,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "" CACHE STRING "")
 # project name
 project(vehicle_control_module)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_C_STANDARD 11)
@@ -48,17 +48,16 @@ add_compile_options(
 
     #-Werror
     -Wall
-    #-Wextra
+    -Wextra
     #-Wcast-align
-    #-Wconversion
-    #-Wsign-conversion
+    -Wconversion
+    -Wsign-conversion
 
     -Wshadow
     -Wlogical-op
 
     -Wsuggest-final-types
     -Wsuggest-final-methods
-    #-pedantic
 
     -D__ATSAMV71Q21B__
 
@@ -67,9 +66,10 @@ add_compile_options(
     -DNDEBUG
 
     # Optimization
-    -O1
+    -O0
     -ffunction-sections
     -mlong-calls
+    -fno-math-errno
 
     -mthumb
     -mcpu=cortex-m7

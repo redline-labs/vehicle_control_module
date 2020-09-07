@@ -37,6 +37,7 @@
 #include <hpl_pmc_config.h>
 #include <hpl_core_port.h>
 
+#include <hpl_xdmac_config.h>
 #include <hpl_dma.h>
 
 /**

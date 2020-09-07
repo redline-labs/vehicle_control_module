@@ -25,8 +25,9 @@ Based on the Microchip [ATSAMV71Q21](https://www.microchip.com/wwwproducts/en/AT
 ## Prerequisites
 ### MacOS
 ```
-brew tap osx-cross/arm
-brew install arm-gcc-bin
+wget https://armkeil.blob.core.windows.net/developer/Files/downloads/gnu-rm/10-2020q2/gcc-arm-none-eabi-10-2020-q2-preview-mac.pkg
+
+# Install.  Add `/Applications/ARM/bin/` to PATH via bash_profile.
 
 brew install cmake
 ```
