@@ -27,7 +27,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 add_link_options(
-    -T${CMAKE_SOURCE_DIR}/src/samv71b/gcc/samv71q21b_flash.ld
+    -T${CMAKE_SOURCE_DIR}/src/ASF/sam/utils/linker_scripts/samv71/samv71q21/gcc/flash.ld
 
     -Wl,--gc-sections
 
@@ -50,8 +50,8 @@ add_compile_options(
     -Wall
     -Wextra
     #-Wcast-align
-    -Wconversion
-    -Wsign-conversion
+    #-Wconversion
+    #-Wsign-conversion
 
     -Wshadow
     -Wlogical-op
@@ -59,7 +59,10 @@ add_compile_options(
     -Wsuggest-final-types
     -Wsuggest-final-methods
 
-    -D__ATSAMV71Q21B__
+    -Wno-expansion-to-defined
+
+    -D__SAMV71Q21B__
+    -DBOARD=SAMV71_XPLAINED_ULTRA
 
     # Debugging.
     -g3
