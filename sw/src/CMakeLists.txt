@@ -40,10 +40,12 @@ include_directories(
 
 add_executable(${PROJECT_NAME}
     main.cpp
+    freertos_hooks.cpp
+    debug_cycle_counter.cpp
 
     # FreeRTOS
     FreeRTOS/portable/GCC/ARM_CM7/r0p1/port.c
-    FreeRTOS/portable/MemMang/heap_4.c
+    #FreeRTOS/portable/MemMang/heap_4.c
 
     FreeRTOS/croutine.c
     FreeRTOS/event_groups.c
