@@ -1,9 +1,9 @@
 /**
  * \file
  *
- * \brief SAMV71-XULTRA LEDs support package.
+ * \brief Chip-specific sleep manager configuration
  *
- * Copyright (c) 2015-2018 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2012-2018 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -33,39 +33,10 @@
 /*
  * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
  */
+#ifndef CONF_SLEEPMGR_H
+#define CONF_SLEEPMGR_H
 
-#ifndef LED_H_INCLUDED
-#define LED_H_INCLUDED
+// Sleep manager options
+#define CONFIG_SLEEPMGR_ENABLE
 
-#include "compiler.h"
-#include "ioport.h"
-
-/**
- * \brief Turns off the specified LEDs.
- *
- * \param led LED to turn off (LEDx_GPIO).
- *
- * \note The pins of the specified LEDs are set to GPIO output mode.
- */
-#define LED_Off(led)     ioport_set_pin_level(led##_GPIO, led##_INACTIVE_LEVEL)
-
-/**
- * \brief Turns on the specified LEDs.
- *
- * \param led LED to turn on (LEDx_GPIO).
- *
- * \note The pins of the specified LEDs are set to GPIO output mode.
- */
-#define LED_On(led)      ioport_set_pin_level(led##_GPIO, led##_ACTIVE_LEVEL)
-
-/**
- * \brief Toggles the specified LEDs.
- *
- * \param led LED to toggle (LEDx_GPIO).
- *
- * \note The pins of the specified LEDs are set to GPIO output mode.
- */
-#define LED_Toggle(led)  ioport_toggle_pin_level(led##_GPIO)
-
-
-#endif  // LED_H_INCLUDED
+#endif /* CONF_SLEEPMGR_H */

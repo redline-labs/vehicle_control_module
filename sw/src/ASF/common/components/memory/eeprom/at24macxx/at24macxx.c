@@ -335,7 +335,7 @@ uint32_t at24macxx_fill_pattern(uint32_t u32_start_address,
 	for (addr = u32_start_address; addr < u32_end_address + 1; addr++) {
 		if (at24macxx_write_byte((uint16_t)addr, u8_pattern) !=
 				AT24MAC_WRITE_SUCCESS) {
-			printf("addr = %d\n", addr);
+			// printf("addr = %d\n", addr);
 			return AT24MAC_WRITE_FAIL;
 		}
 	}

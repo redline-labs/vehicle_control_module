@@ -21,7 +21,7 @@ void vApplicationGetTimerTaskMemory(StaticTask_t** ppxTimerTaskTCBBuffer,
  */
 extern void vApplicationStackOverflowHook(TaskHandle_t pxTask, char* pcTaskName)
 {
-    printf("stack overflow %x %s\r\n", pxTask, (portCHAR *)pcTaskName);
+    printf("stack overflow %p %s\r\n", pxTask, pcTaskName);
     /* If the parameters have been corrupted then inspect pxCurrentTCB to
      * identify which task has overflowed its stack.
      */

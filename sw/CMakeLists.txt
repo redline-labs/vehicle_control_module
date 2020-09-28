@@ -63,6 +63,7 @@ add_compile_options(
 
     -D__SAMV71Q21B__
     -DBOARD=SAMV71_XPLAINED_ULTRA
+    -DLUA_32BITS
 
     # Debugging.
     -g3
@@ -71,6 +72,7 @@ add_compile_options(
     # Optimization
     -O0
     -ffunction-sections
+    -fdata-sections
     -mlong-calls
     -fno-math-errno
 

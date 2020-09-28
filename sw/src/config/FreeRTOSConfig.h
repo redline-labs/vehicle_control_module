@@ -50,7 +50,7 @@
 #define configUSE_IDLE_HOOK						0
 #define configUSE_TICK_HOOK						0
 #define configCPU_CLOCK_HZ						(BOARD_MCK)
-#define configTICK_RATE_HZ						(100U )
+#define configTICK_RATE_HZ						(100U)
 #define configMAX_PRIORITIES					(5U)
 #define configMINIMAL_STACK_SIZE				(130U)
 #define configMAX_TASK_NAME_LEN					(10U)
@@ -79,7 +79,7 @@ tick off. */
 format the raw data provided by the uxTaskGetSystemState() function in to human
 readable ASCII form.  See the notes in the implementation of vTaskList() within
 FreeRTOS/Source/tasks.c for limitations. */
-#define configUSE_STATS_FORMATTING_FUNCTIONS	1
+#define configUSE_STATS_FORMATTING_FUNCTIONS	0
 
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES 			0

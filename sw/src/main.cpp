@@ -1,70 +1,27 @@
-#include <asf.h>
 #include "conf_board.h"
+#include "conf_features.h"
 
-constexpr const char* kTaskMonitorTaskName = "Monitor";
-constexpr uint32_t kTaskMonitorTaskStackSize = 2048U / sizeof(portSTACK_TYPE);
-constexpr UBaseType_t kTaskMonitorTaskPriority = tskIDLE_PRIORITY;
-static StackType_t task_monitor_task_stack[kTaskMonitorTaskStackSize] = {};
-static StaticTask_t task_monitor_task_buffer = {};
+#include "chip_id_helper.h"
+#include "task_monitor.h"
+#include "task_led.h"
+#include "task_lua.h"
+#include "lua.h"
 
-constexpr const char* kLedTaskName = "LED";
-constexpr uint32_t kLedTaskStackSize = 1024U / sizeof(portSTACK_TYPE);
-constexpr UBaseType_t kLedTaskPriority = tskIDLE_PRIORITY;
-static StackType_t led_task_stack[kLedTaskStackSize] = {};
-static StaticTask_t led_task_buffer = {};
+#include <FreeRTOS.h>
+#include <task.h>
 
-static void task_monitor(void* /*pvParameters*/)
+#include <chipid.h>
+#include <fpu.h>
+#include <serial.h>
+#include <stdio_serial.h>
+
+static void configure_console()
 {
-	constexpr uint32_t kMaxNumTasks = 10U;
-    TaskStatus_t task_statuses[kMaxNumTasks] = {};
-    unsigned long total_run_time = 0;
-
-    TickType_t last_wake_time_ticks = xTaskGetTickCount();
-    constexpr TickType_t kTaskRateTicks = pdMS_TO_TICKS(5000);
-
-    while (true)
-    {
-        uint8_t num_tasks = uxTaskGetSystemState(&(task_statuses[0]),
-        	kMaxNumTasks,
-        	&total_run_time);
-
-        printf("Num tasks = %u\n\r", num_tasks);
-        printf(" ~~ Total run time = %u ~~ \n\r", total_run_time);
-
-        for (uint8_t i = 0U; i < num_tasks; ++i)
-        {
-        	printf(" :: %s\t%u\n\r", task_statuses[i].pcTaskName, task_statuses[i].ulRunTimeCounter);
-        }
-
-        vTaskDelayUntil(&last_wake_time_ticks, kTaskRateTicks);
-    }
-}
-
-static void task_led(void *pvParameters)
-{
-    UNUSED(pvParameters);
-
-    TickType_t last_wake_time_ticks = xTaskGetTickCount();
-    constexpr TickType_t kTaskRateTicks = pdMS_TO_TICKS(500);
-
-    for (;;)
-    {
-        LED_Toggle(LED0);
-        vTaskDelayUntil(&last_wake_time_ticks, kTaskRateTicks);
-    }
-}
-
-static void configure_console(void)
-{
-    const usart_serial_options_t uart_serial_options = {
+    constexpr usart_serial_options_t uart_serial_options = {
         .baudrate = CONF_UART_BAUDRATE,
-#if (defined CONF_UART_CHAR_LENGTH)
         .charlength = CONF_UART_CHAR_LENGTH,
-#endif
         .paritytype = CONF_UART_PARITY,
-#if (defined CONF_UART_STOP_BITS)
         .stopbits = CONF_UART_STOP_BITS,
-#endif
     };
 
     /* Configure console UART. */
@@ -74,16 +31,8 @@ static void configure_console(void)
     setbuf(stdout, NULL);
 }
 
-/**
- *  \brief FreeRTOS Real Time Kernel example entry point.
- *
- *  \return Unused (ANSI-C compatibility).
- */
-int main(void)
+int main()
 {
-	TaskHandle_t monitor_task_handle = nullptr;
-	TaskHandle_t led_task_handle = nullptr;
-
     /* Initialize the SAM system */
     sysclk_init();
     board_init();
@@ -91,41 +40,39 @@ int main(void)
     /* Initialize the console uart */
     configure_console();
 
+    chipid_data_t chipid_data;
+    chipid_read(CHIPID, &chipid_data);
+
     /* Output demo information. */
+    printf("Board: " BOARD_NAME "\n\r");
+    printf("%s (%s)\n\r", get_chip_id_arch_str(chipid_data.ul_arch),
+        get_chip_id_embedded_processor_type_str(chipid_data.ul_eproc));
+    printf("%s (NVM: %s, NVM2: %s)\n\r", get_chip_id_nvp_type_str(chipid_data.ul_nvptyp),
+        get_chip_id_nvm_size_str(chipid_data.ul_nvpsiz), get_chip_id_nvm2_size_str(chipid_data.ul_nvpsiz2));
+    printf("SRAM: %s\n\r", get_chip_id_sram_size_str(chipid_data.ul_sramsiz));
+    printf("Sysclock: %ld MHz\n\r", sysclk_get_cpu_hz() / 1000000UL);
+    printf("FPU enabled: %s\n\r", fpu_is_enabled() ? "true" : "false");
+
+    printf("-- Compiled: " __DATE__ " " __TIME__ " --\n\r");
     printf("-- FreeRTOS " tskKERNEL_VERSION_NUMBER "\n\r");
-    printf("-- %s\n\r", BOARD_NAME);
-    printf("-- Compiled: %s %s --\n\r", __DATE__, __TIME__);
-    printf("-- FPU enabled: %s\n\r", fpu_is_enabled() ? "true" : "false");
-    printf("-- SYSCLCK %d\n\r", sysclk_get_cpu_hz());
+    printf("-- " LUA_VERSION "\n\r");
 
-    monitor_task_handle = xTaskCreateStatic(
-    	&task_monitor,
-    	kTaskMonitorTaskName,
-    	kTaskMonitorTaskStackSize,
-    	nullptr,
-    	kTaskMonitorTaskPriority,
-    	&task_monitor_task_stack[0],
-    	&task_monitor_task_buffer
-    );
-
-    if (monitor_task_handle  == nullptr)
+    if (false == create_task_monitor())
     {
-    	printf("Failed to create Monitor task\r\n");
+        printf("Failed to create Monitor task\r\n");
     }
 
-    led_task_handle = xTaskCreateStatic(
-    	&task_led,
-    	kLedTaskName,
-    	kLedTaskStackSize,
-    	nullptr,
-    	kLedTaskPriority,
-    	&led_task_stack[0],
-    	&led_task_buffer
-    );
-
-    if (led_task_handle  == nullptr)
+    if (false == create_task_led())
     {
-    	printf("Failed to create LED task\r\n");
+        printf("Failed to create LED task\r\n");
+    }
+
+    if constexpr (kFeaturesEnableLua)
+    {
+        if (false == create_task_lua())
+        {
+            printf("Failed to create Lua task\r\n");
+        }
     }
 
     /* Start the scheduler. */
