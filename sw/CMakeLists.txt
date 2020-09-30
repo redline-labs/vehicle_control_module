@@ -12,10 +12,10 @@ set(CMAKE_CXX_COMPILER_ID GNU)
 set(CMAKE_C_COMPILER_FORCED TRUE)
 set(CMAKE_CXX_COMPILER_FORCED TRUE)
 
-set(CMAKE_C_FLAGS_DEBUG "" CACHE STRING "")
-set(CMAKE_CXX_FLAGS_DEBUG "" CACHE STRING "")
-set(CMAKE_C_FLAGS_RELEASE "" CACHE STRING "")
-set(CMAKE_CXX_FLAGS_RELEASE "" CACHE STRING "")
+set(CMAKE_C_FLAGS_DEBUG "-O0 -g3" CACHE STRING "")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g3" CACHE STRING "")
+set(CMAKE_C_FLAGS_RELEASE "-O3" CACHE STRING "")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3" CACHE STRING "")
 
 # project name
 project(vehicle_control_module)
@@ -25,6 +25,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
+
+# we default to Release build type
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Debug")
+endif()
+message("-- Build Type: ${CMAKE_BUILD_TYPE}")
 
 add_link_options(
     -T${CMAKE_SOURCE_DIR}/src/ASF/sam/utils/linker_scripts/samv71/samv71q21/gcc/flash.ld
@@ -66,11 +72,9 @@ add_compile_options(
     -DLUA_32BITS
 
     # Debugging.
-    -g3
     -DNDEBUG
 
     # Optimization
-    -O0
     -ffunction-sections
     -fdata-sections
     -mlong-calls

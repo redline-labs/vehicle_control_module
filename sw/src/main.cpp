@@ -67,7 +67,7 @@ int main()
         printf("Unique ID: %s\n\r", reinterpret_cast<char*>(&(unique_id[0])) + 1U);
     }
 
-    printf("-- Compiled: " __DATE__ " " __TIME__ " --\n\r");
+    printf("-- Compiled (" BUILD_TYPE "): " __DATE__ " " __TIME__ "\n\r");
     printf("-- FreeRTOS " tskKERNEL_VERSION_NUMBER "\n\r");
     printf("-- " LUA_VERSION "\n\r");
 

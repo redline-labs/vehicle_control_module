@@ -157,6 +157,9 @@ add_executable(${PROJECT_NAME}
     ASF/sam/utils/syscalls/gcc/syscalls.c
 )
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    BUILD_TYPE="${CMAKE_BUILD_TYPE}")
+
 set_target_properties(${PROJECT_NAME}
     # Force a .elf extension on the output file.
     PROPERTIES
