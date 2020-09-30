@@ -3,7 +3,18 @@
 
 #include <cstdbool>
 
+namespace features
+{
+
 // Enable the Lua interpreter.
-constexpr bool kFeaturesEnableLua = false;
+constexpr bool kEnableLua = true;
+
+// Enable reading the unique ID from Flash.
+constexpr bool kReadFlashUniqueId = true;
+
+constexpr bool kEnableICache = true;
+constexpr bool kEnableDCache = true;
+
+}  // namespace features
 
 #endif  //CONF_FEATURES_H_

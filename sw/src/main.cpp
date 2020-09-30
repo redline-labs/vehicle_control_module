@@ -1,4 +1,4 @@
-#include "conf_board.h"
+#include "board.h"
 #include "conf_features.h"
 
 #include "chip_id_helper.h"
@@ -11,6 +11,7 @@
 #include <task.h>
 
 #include <chipid.h>
+#include <efc.h>
 #include <fpu.h>
 #include <serial.h>
 #include <stdio_serial.h>
@@ -53,6 +54,19 @@ int main()
     printf("Sysclock: %ld MHz\n\r", sysclk_get_cpu_hz() / 1000000UL);
     printf("FPU enabled: %s\n\r", fpu_is_enabled() ? "true" : "false");
 
+    if constexpr (features::kReadFlashUniqueId)
+    {
+        uint32_t unique_id[4] = {};
+
+        if (EFC_RC_OK != efc_perform_read_sequence(EFC, EFC_FCMD_STUI, EFC_FCMD_SPUI, &(unique_id[0]), 4))
+        {
+            printf("Failed Read the unique identifier!\n\r");
+            return 0;
+        }
+
+        printf("Unique ID: %s\n\r", reinterpret_cast<char*>(&(unique_id[0])) + 1U);
+    }
+
     printf("-- Compiled: " __DATE__ " " __TIME__ " --\n\r");
     printf("-- FreeRTOS " tskKERNEL_VERSION_NUMBER "\n\r");
     printf("-- " LUA_VERSION "\n\r");
@@ -67,12 +81,23 @@ int main()
         printf("Failed to create LED task\r\n");
     }
 
-    if constexpr (kFeaturesEnableLua)
+    if constexpr (features::kEnableLua)
     {
         if (false == create_task_lua())
         {
             printf("Failed to create Lua task\r\n");
         }
+    }
+
+
+    if constexpr (features::kEnableICache)
+    {
+        SCB_EnableICache();
+    }
+
+    if constexpr (features::kEnableDCache)
+    {
+        SCB_EnableDCache();
     }
 
     /* Start the scheduler. */

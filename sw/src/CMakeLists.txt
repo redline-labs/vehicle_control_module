@@ -8,6 +8,9 @@ include_directories(SYSTEM
     FreeRTOS/include
     FreeRTOS/portable/GCC/ARM_CM7/r0p1
 
+    # Boards.
+    boards
+
     # CMSIS.
     CMSIS/Core/Include
 
@@ -15,7 +18,6 @@ include_directories(SYSTEM
     lua/src
 
     # ASF.
-    ASF/common/boards
     ASF/common/components/memory/eeprom/at24macxx
     ASF/common/services/clock
     ASF/common/services/clock/samv71
@@ -34,7 +36,6 @@ include_directories(SYSTEM
     ASF/common/utils
     ASF/common/utils/interrupt
     ASF/common/utils/stdio/stdio_serial
-    ASF/sam/boards
     ASF/sam/components/ethernet_phy
     ASF/sam/components/ethernet_phy/ksz8061rnb
     ASF/sam/drivers/aes
@@ -74,6 +75,8 @@ add_executable(${PROJECT_NAME}
     task_led.cpp
     task_lua.cpp
     task_monitor.cpp
+
+    boards/samv71_xplained_ultra/init.cpp
 
     # FreeRTOS
     FreeRTOS/croutine.c
@@ -129,7 +132,6 @@ add_executable(${PROJECT_NAME}
     ASF/common/utils/interrupt/interrupt_sam_nvic.c
     ASF/common/utils/stdio/read.c
     ASF/common/utils/stdio/write.c
-    ASF/sam/boards/samv71_xplained_ultra/init.c
     ASF/sam/components/ethernet_phy/ksz8061rnb/ethernet_phy.c
     ASF/sam/drivers/aes/aes.c
     ASF/sam/drivers/afec/afec.c

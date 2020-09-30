@@ -34,14 +34,11 @@
  * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
  */
 
-#include "compiler.h"
 #include "board.h"
 #include "conf_board.h"
 #include "ioport.h"
 #include "pio.h"
-#ifdef CONF_BOARD_CONFIG_MPU_AT_INIT
 #include "mpu.h"
-#endif
 
 /**
  * \brief Set peripheral mode for IOPORT pins.
@@ -82,8 +79,6 @@
 		ioport_set_pin_sense_mode(pin, sense);\
 	} while (0)
 
-
-#ifdef CONF_BOARD_CONFIG_MPU_AT_INIT
 /**
  *	Default memory map
  *	Address range        Memory region      Memory type   Shareability  Cache policy
@@ -100,7 +95,7 @@
 /**
  * \brief Set up a memory region.
  */
-static void _setup_memory_region( void )
+static void _setup_memory_region()
 {
 
 	uint32_t dw_region_base_addr;
@@ -323,9 +318,7 @@ static void _setup_memory_region( void )
 	__DSB();
 	__ISB();
 }
-#endif
 
-#ifdef CONF_BOARD_ENABLE_TCM_AT_INIT
 #if defined(__GNUC__)
 extern char _itcm_lma, _sitcm, _eitcm;
 #endif
@@ -333,24 +326,24 @@ extern char _itcm_lma, _sitcm, _eitcm;
 /** \brief  TCM memory enable
 * The function enables TCM memories
 */
-static inline void tcm_enable(void)
+static inline void tcm_enable()
 {
 
 	__DSB();
 	__ISB();
-	
+
 	SCB->ITCMCR = (SCB_ITCMCR_EN_Msk  | SCB_ITCMCR_RMW_Msk | SCB_ITCMCR_RETEN_Msk);
 	SCB->DTCMCR = ( SCB_DTCMCR_EN_Msk | SCB_DTCMCR_RMW_Msk | SCB_DTCMCR_RETEN_Msk);
-	
+
 	__DSB();
 	__ISB();
 }
-#else
+
 /** \brief  TCM memory Disable
 
 	The function enables TCM memories
  */
-static inline void tcm_disable(void) 
+static inline void tcm_disable()
 {
 
 	__DSB();
@@ -360,49 +353,52 @@ static inline void tcm_disable(void)
 	__DSB();
 	__ISB();
 }
-#endif
 
-void board_init(void)
+void board_init()
 {
-#ifndef CONF_BOARD_KEEP_WATCHDOG_AT_INIT
-	/* Disable the watchdog */
-	WDT->WDT_MR = WDT_MR_WDDIS;
-#endif
-
-#ifdef CONF_BOARD_CONFIG_MPU_AT_INIT
-	_setup_memory_region();
-#endif
-
-#ifdef CONF_BOARD_ENABLE_CACHE_AT_INIT
-	/* Enabling the Cache */
-	SCB_EnableICache(); 
-	SCB_EnableDCache();
-#endif
-
-#ifdef CONF_BOARD_ENABLE_TCM_AT_INIT
-	/* TCM Configuration */
-	EFC->EEFC_FCR = (EEFC_FCR_FKEY_PASSWD | EEFC_FCR_FCMD_CGPB 
-					| EEFC_FCR_FARG(8));
-	EFC->EEFC_FCR = (EEFC_FCR_FKEY_PASSWD | EEFC_FCR_FCMD_SGPB
-					| EEFC_FCR_FARG(7));
-	tcm_enable();
-#if defined(__GNUC__)
-	volatile char *dst = &_sitcm;
-	volatile char *src = &_itcm_lma;
-	/* copy code_TCM from flash to ITCM */
-	while(dst < &_eitcm){
-		*dst++ = *src++;
+	if constexpr (board::kDisableWatchdogAtInit)
+	{
+		// Disable the watchdog.
+		WDT->WDT_MR = WDT_MR_WDDIS;
 	}
-#endif
-#else
+
+	if constexpr (board::kConfigureMpuAtInit)
+	{
+		_setup_memory_region();
+	}
+
+	if constexpr (board::kEnableCacheAtInit)
+	{
+		/* Enabling the Cache */
+		SCB_EnableICache();
+		SCB_EnableDCache();
+	}
+
 	/* TCM Configuration */
-	EFC->EEFC_FCR = (EEFC_FCR_FKEY_PASSWD | EEFC_FCR_FCMD_CGPB 
-					| EEFC_FCR_FARG(8));
-	EFC->EEFC_FCR = (EEFC_FCR_FKEY_PASSWD | EEFC_FCR_FCMD_CGPB 
-					| EEFC_FCR_FARG(7));
-	
-	tcm_disable();
-#endif
+	if constexpr (board::kEnableTcmAtInit)
+	{
+		EFC->EEFC_FCR = (EEFC_FCR_FKEY_PASSWD | EEFC_FCR_FCMD_CGPB | EEFC_FCR_FARG(8));
+		EFC->EEFC_FCR = (EEFC_FCR_FKEY_PASSWD | EEFC_FCR_FCMD_SGPB | EEFC_FCR_FARG(7));
+		tcm_enable();
+
+#		if defined(__GNUC__)
+		volatile char *dst = &_sitcm;
+		volatile char *src = &_itcm_lma;
+		/* copy code_TCM from flash to ITCM */
+		while(dst < &_eitcm)
+		{
+			*dst++ = *src++;
+		}
+#		endif
+	}
+	else
+	{
+		/* TCM Configuration */
+		EFC->EEFC_FCR = (EEFC_FCR_FKEY_PASSWD | EEFC_FCR_FCMD_CGPB | EEFC_FCR_FARG(8));
+		EFC->EEFC_FCR = (EEFC_FCR_FKEY_PASSWD | EEFC_FCR_FCMD_CGPB | EEFC_FCR_FARG(7));
+
+		tcm_disable();
+	}
 
 	/* Initialize IOPORTs */
 	ioport_init();
@@ -419,12 +415,13 @@ void board_init(void)
 	ioport_set_pin_input_mode(GPIO_PUSH_BUTTON_1, GPIO_PUSH_BUTTON_1_FLAGS,
 			GPIO_PUSH_BUTTON_1_SENSE);
 
-#ifdef CONF_BOARD_UART_CONSOLE
-	/* Configure UART pins */
-	ioport_set_pin_peripheral_mode(USART1_RXD_GPIO, USART1_RXD_FLAGS);
-	MATRIX->CCFG_SYSIO |= CCFG_SYSIO_SYSIO4;
-	ioport_set_pin_peripheral_mode(USART1_TXD_GPIO, USART1_TXD_FLAGS);
-#endif
+	if constexpr (board::kEnableUartConsole)
+	{
+		/* Configure UART pins */
+		ioport_set_pin_peripheral_mode(USART1_RXD_GPIO, USART1_RXD_FLAGS);
+		MATRIX->CCFG_SYSIO |= CCFG_SYSIO_SYSIO4;
+		ioport_set_pin_peripheral_mode(USART1_TXD_GPIO, USART1_TXD_FLAGS);
+	}
 
 #ifdef CONF_BOARD_TWIHS0
 	ioport_set_pin_peripheral_mode(TWIHS0_DATA_GPIO, TWIHS0_DATA_FLAGS);
@@ -548,34 +545,34 @@ void board_init(void)
 	pio_configure_pin(SDRAM_SDWE_PIO, SDRAM_SDWE_FLAGS);
 	pio_configure_pin(SDRAM_NBS0_PIO, SDRAM_NBS0_FLAGS);
 	pio_configure_pin(SDRAM_NBS1_PIO, SDRAM_NBS1_FLAGS);
-	pio_configure_pin(SDRAM_A2_PIO, SDRAM_A_FLAGS);  
-	pio_configure_pin(SDRAM_A3_PIO, SDRAM_A_FLAGS);  
-	pio_configure_pin(SDRAM_A4_PIO, SDRAM_A_FLAGS);  
-	pio_configure_pin(SDRAM_A5_PIO, SDRAM_A_FLAGS);  
-	pio_configure_pin(SDRAM_A6_PIO, SDRAM_A_FLAGS);  
-	pio_configure_pin(SDRAM_A7_PIO, SDRAM_A_FLAGS);  
-	pio_configure_pin(SDRAM_A8_PIO, SDRAM_A_FLAGS);  
-	pio_configure_pin(SDRAM_A9_PIO, SDRAM_A_FLAGS);  
-	pio_configure_pin(SDRAM_A10_PIO, SDRAM_A_FLAGS);  
-	pio_configure_pin(SDRAM_A11_PIO, SDRAM_A_FLAGS);  
+	pio_configure_pin(SDRAM_A2_PIO, SDRAM_A_FLAGS);
+	pio_configure_pin(SDRAM_A3_PIO, SDRAM_A_FLAGS);
+	pio_configure_pin(SDRAM_A4_PIO, SDRAM_A_FLAGS);
+	pio_configure_pin(SDRAM_A5_PIO, SDRAM_A_FLAGS);
+	pio_configure_pin(SDRAM_A6_PIO, SDRAM_A_FLAGS);
+	pio_configure_pin(SDRAM_A7_PIO, SDRAM_A_FLAGS);
+	pio_configure_pin(SDRAM_A8_PIO, SDRAM_A_FLAGS);
+	pio_configure_pin(SDRAM_A9_PIO, SDRAM_A_FLAGS);
+	pio_configure_pin(SDRAM_A10_PIO, SDRAM_A_FLAGS);
+	pio_configure_pin(SDRAM_A11_PIO, SDRAM_A_FLAGS);
 	pio_configure_pin(SDRAM_SDA10_PIO, SDRAM_SDA10_FLAGS);
-	pio_configure_pin(SDRAM_D0_PIO, SDRAM_D_FLAGS);  
-	pio_configure_pin(SDRAM_D1_PIO, SDRAM_D_FLAGS);  
-	pio_configure_pin(SDRAM_D2_PIO, SDRAM_D_FLAGS);  
-	pio_configure_pin(SDRAM_D3_PIO, SDRAM_D_FLAGS);  
-	pio_configure_pin(SDRAM_D4_PIO, SDRAM_D_FLAGS);  
-	pio_configure_pin(SDRAM_D5_PIO, SDRAM_D_FLAGS);  
-	pio_configure_pin(SDRAM_D6_PIO, SDRAM_D_FLAGS);  
-	pio_configure_pin(SDRAM_D7_PIO, SDRAM_D_FLAGS);  
-	pio_configure_pin(SDRAM_D8_PIO, SDRAM_D_FLAGS);  
-	pio_configure_pin(SDRAM_D9_PIO, SDRAM_D_FLAGS);  
-	pio_configure_pin(SDRAM_D10_PIO, SDRAM_D_FLAGS); 
-	pio_configure_pin(SDRAM_D11_PIO, SDRAM_D_FLAGS); 
-	pio_configure_pin(SDRAM_D12_PIO, SDRAM_D_FLAGS); 
-	pio_configure_pin(SDRAM_D13_PIO, SDRAM_D_FLAGS); 
-	pio_configure_pin(SDRAM_D14_PIO, SDRAM_D_FLAGS); 
-	pio_configure_pin(SDRAM_D15_PIO, SDRAM_D_FLAGS); 
-	
+	pio_configure_pin(SDRAM_D0_PIO, SDRAM_D_FLAGS);
+	pio_configure_pin(SDRAM_D1_PIO, SDRAM_D_FLAGS);
+	pio_configure_pin(SDRAM_D2_PIO, SDRAM_D_FLAGS);
+	pio_configure_pin(SDRAM_D3_PIO, SDRAM_D_FLAGS);
+	pio_configure_pin(SDRAM_D4_PIO, SDRAM_D_FLAGS);
+	pio_configure_pin(SDRAM_D5_PIO, SDRAM_D_FLAGS);
+	pio_configure_pin(SDRAM_D6_PIO, SDRAM_D_FLAGS);
+	pio_configure_pin(SDRAM_D7_PIO, SDRAM_D_FLAGS);
+	pio_configure_pin(SDRAM_D8_PIO, SDRAM_D_FLAGS);
+	pio_configure_pin(SDRAM_D9_PIO, SDRAM_D_FLAGS);
+	pio_configure_pin(SDRAM_D10_PIO, SDRAM_D_FLAGS);
+	pio_configure_pin(SDRAM_D11_PIO, SDRAM_D_FLAGS);
+	pio_configure_pin(SDRAM_D12_PIO, SDRAM_D_FLAGS);
+	pio_configure_pin(SDRAM_D13_PIO, SDRAM_D_FLAGS);
+	pio_configure_pin(SDRAM_D14_PIO, SDRAM_D_FLAGS);
+	pio_configure_pin(SDRAM_D15_PIO, SDRAM_D_FLAGS);
+
 	MATRIX->CCFG_SMCNFCS = CCFG_SMCNFCS_SDRAMEN;
 #endif
 
