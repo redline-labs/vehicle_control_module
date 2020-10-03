@@ -8,6 +8,10 @@ include_directories(SYSTEM
     FreeRTOS/include
     FreeRTOS/portable/GCC/ARM_CM7/r0p1
 
+    # FreeRTOS-Plus-TCP.
+    FreeRTOS-Plus-TCP/include
+    FreeRTOS-Plus-TCP/portable/Compiler/GCC
+
     # Boards.
     boards
 
@@ -18,7 +22,6 @@ include_directories(SYSTEM
     lua/src
 
     # ASF.
-    ASF/common/components/memory/eeprom/at24macxx
     ASF/common/services/clock
     ASF/common/services/clock/samv71
     ASF/common/services/delay
@@ -89,6 +92,18 @@ add_executable(${PROJECT_NAME}
 
     FreeRTOS/portable/GCC/ARM_CM7/r0p1/port.c
 
+    # FreeRTOS+TCP.
+    FreeRTOS-Plus-TCP/FreeRTOS_ARP.c
+    FreeRTOS-Plus-TCP/FreeRTOS_DHCP.c
+    FreeRTOS-Plus-TCP/FreeRTOS_DNS.c
+    FreeRTOS-Plus-TCP/FreeRTOS_IP.c
+    FreeRTOS-Plus-TCP/FreeRTOS_Sockets.c
+    FreeRTOS-Plus-TCP/FreeRTOS_Stream_Buffer.c
+    FreeRTOS-Plus-TCP/FreeRTOS_TCP_IP.c
+    FreeRTOS-Plus-TCP/FreeRTOS_TCP_WIN.c
+    FreeRTOS-Plus-TCP/FreeRTOS_UDP_IP.c
+    FreeRTOS-Plus-TCP/portable/BufferManagement/BufferAllocation_1.c
+
     # Lua
     lua/src/lapi.c
     lua/src/lauxlib.c
@@ -124,7 +139,6 @@ add_executable(${PROJECT_NAME}
     lua/src/lzio.c
 
     # ASF
-    ASF/common/components/memory/eeprom/at24macxx/at24macxx.c
     ASF/common/services/clock/samv71/sysclk.c
     ASF/common/services/delay/sam/cycle_counter.c
     ASF/common/services/serial/usart_serial.c

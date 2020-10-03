@@ -2,6 +2,7 @@
 #include "conf_features.h"
 
 #include "chip_id_helper.h"
+#include "mac_address.h"
 #include "task_monitor.h"
 #include "task_led.h"
 #include "task_lua.h"
@@ -15,6 +16,9 @@
 #include <fpu.h>
 #include <serial.h>
 #include <stdio_serial.h>
+#include <twihs.h>
+
+#include <array>
 
 static void configure_console()
 {
@@ -30,6 +34,32 @@ static void configure_console()
 
     /* Specify that stdout should not be buffered. */
     setbuf(stdout, NULL);
+}
+
+static Eui48MacAddress at24mac_get_mac_address()
+{
+    Eui48MacAddress mac_addr = {};
+
+    /* MAC address */
+    twihs_packet_t packet_mac_addr = {};
+
+    packet_mac_addr.chip = BOARD_AT24MAC_EXTENDED_ADDRESS;
+    packet_mac_addr.addr[0] = 0x9A;
+    packet_mac_addr.addr_length = 1;
+    packet_mac_addr.buffer = &(mac_addr[0]);
+    packet_mac_addr.length = mac_addr.size();
+
+    if (TWIHS_SUCCESS != twihs_master_read(BOARD_AT24MAC_TWIHS, &packet_mac_addr))
+    {
+        printf("Failed twihs_master_read init.\n\r");
+    }
+
+    if ((mac_addr[0] == 0xFC) || (mac_addr[1] == 0xC2) || (mac_addr[2] == 0x3D))
+    {
+        mac_addr.unique = true;
+    }
+
+    return mac_addr;
 }
 
 int main()
@@ -56,7 +86,8 @@ int main()
 
     if constexpr (features::kReadFlashUniqueId)
     {
-        uint32_t unique_id[4] = {};
+        // Purposedly keep around another byte to null terminate.
+        uint32_t unique_id[5] = {};
 
         if (EFC_RC_OK != efc_perform_read_sequence(EFC, EFC_FCMD_STUI, EFC_FCMD_SPUI, &(unique_id[0]), 4))
         {
@@ -66,6 +97,16 @@ int main()
 
         printf("Unique ID: %s\n\r", reinterpret_cast<char*>(&(unique_id[0])) + 1U);
     }
+
+    Eui48MacAddress mac_addr;
+    if constexpr (features::kReadMacFromEeprom)
+    {
+        mac_addr = at24mac_get_mac_address();
+    }
+
+    printf("MAC Address (%s): %02X:%02X:%02X:%02X:%02X:%02X\n\r", mac_addr.unique ? "Unique" : "Hardcoded",
+        mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+
 
     printf("-- Compiled (" BUILD_TYPE "): " __DATE__ " " __TIME__ "\n\r");
     printf("-- FreeRTOS " tskKERNEL_VERSION_NUMBER "\n\r");
@@ -88,7 +129,6 @@ int main()
             printf("Failed to create Lua task\r\n");
         }
     }
-
 
     if constexpr (features::kEnableICache)
     {
