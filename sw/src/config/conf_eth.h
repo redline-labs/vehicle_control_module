@@ -1,7 +1,7 @@
 /**
  * \file
  *
- * \brief GMAC (Ethernet MAC) driver for SAM.
+ * \brief GMAC (Ethernet MAC) driver configuration.
  *
  * Copyright (c) 2013-2018 Microchip Technology Inc. and its subsidiaries.
  *
@@ -30,31 +30,27 @@
  * \asf_license_stop
  *
  */
-/*
- * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
- */
 
 #ifndef CONF_EMAC_H_INCLUDED
 #define CONF_EMAC_H_INCLUDED
 
-/// @cond 0
-/**INDENT-OFF**/
-#ifdef __cplusplus
-extern "C" {
-#endif
-/**INDENT-ON**/
-/// @endcond
-
 #include "gmac.h"
 
+/**
+ * LWIP_NETIF_TX_SINGLE_PBUF: if this is set to 1, lwIP tries to put all data
+ * to be sent into one single pbuf. This is for compatibility with DMA-enabled
+ * MACs that do not support scatter-gather.
+ */
+#define LWIP_NETIF_TX_SINGLE_PBUF                     1
+
 /** Number of buffer for RX */
-#define GMAC_RX_BUFFERS  16
+#define GMAC_RX_BUFFERS                               3
 
 /** Number of buffer for TX */
-#define GMAC_TX_BUFFERS  8
+#define GMAC_TX_BUFFERS                               3
 
 /** MAC PHY operation max retry count */
-#define MAC_PHY_RETRY_MAX 1000000
+#define MAC_PHY_RETRY_MAX                             1000000
 
 /** MAC address definition.  The MAC address must be unique on the network. */
 #define ETHERNET_CONF_ETHADDR0                        0x00
@@ -68,7 +64,7 @@ extern "C" {
 #define ETHERNET_CONF_IPADDR0                         192
 #define ETHERNET_CONF_IPADDR1                         168
 #define ETHERNET_CONF_IPADDR2                         0
-#define ETHERNET_CONF_IPADDR3                         2
+#define ETHERNET_CONF_IPADDR3                         100
 
 /** The gateway address being used. */
 #define ETHERNET_CONF_GATEWAY_ADDR0                   192
@@ -83,14 +79,6 @@ extern "C" {
 #define ETHERNET_CONF_NET_MASK3                       0
 
 /** Ethernet MII/RMII mode */
-#define ETH_PHY_MODE                                  GMAC_PHY_MII
-
-/// @cond 0
-/**INDENT-OFF**/
-#ifdef __cplusplus
-}
-#endif
-/**INDENT-ON**/
-/// @endcond
+#define ETH_PHY_MODE                                  GMAC_PHY_RMII
 
 #endif /* CONF_EMAC_H_INCLUDED */

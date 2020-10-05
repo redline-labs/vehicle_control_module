@@ -1,24 +1,30 @@
-#include "board.h"
-#include "conf_features.h"
+#include <board.h>
+#include <conf_features.h>
 
-#include "chip_id_helper.h"
-#include "mac_address.h"
-#include "task_monitor.h"
-#include "task_led.h"
-#include "task_lua.h"
-#include "lua.h"
+#include <chip_id_helper.h>
+#include <mac_address.h>
+
+#include <task_ethernet.h>
+#include <task_led.h>
+#include <task_lua.h>
+#include <task_monitor.h>
+
+#include <lua.h>
 
 #include <FreeRTOS.h>
 #include <task.h>
 
 #include <chipid.h>
 #include <efc.h>
+#include <ethernet_phy.h>
 #include <fpu.h>
+
 #include <serial.h>
 #include <stdio_serial.h>
 #include <twihs.h>
 
 #include <array>
+#include <cstring>
 
 static void configure_console()
 {
@@ -71,7 +77,7 @@ int main()
     /* Initialize the console uart */
     configure_console();
 
-    chipid_data_t chipid_data;
+    chipid_data_t chipid_data = {};
     chipid_read(CHIPID, &chipid_data);
 
     /* Output demo information. */
@@ -98,14 +104,16 @@ int main()
         printf("Unique ID: %s\n\r", reinterpret_cast<char*>(&(unique_id[0])) + 1U);
     }
 
-    Eui48MacAddress mac_addr;
+    Eui48MacAddress g_mac_addr = {};
     if constexpr (features::kReadMacFromEeprom)
     {
-        mac_addr = at24mac_get_mac_address();
+        g_mac_addr = at24mac_get_mac_address();
     }
 
-    printf("MAC Address (%s): %02X:%02X:%02X:%02X:%02X:%02X\n\r", mac_addr.unique ? "Unique" : "Hardcoded",
-        mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+    printf("MAC Address (%s): %02X:%02X:%02X:%02X:%02X:%02X\n\r", g_mac_addr.unique ? "Unique" : "Hardcoded",
+        g_mac_addr[0], g_mac_addr[1], g_mac_addr[2], g_mac_addr[3], g_mac_addr[4], g_mac_addr[5]);
+    printf("IP Address: %d.%d.%d.%d\n\r", ETHERNET_CONF_IPADDR0, ETHERNET_CONF_IPADDR1, ETHERNET_CONF_IPADDR2,
+        ETHERNET_CONF_IPADDR3);
 
 
     printf("-- Compiled (" BUILD_TYPE "): " __DATE__ " " __TIME__ "\n\r");
@@ -114,19 +122,27 @@ int main()
 
     if (false == create_task_monitor())
     {
-        printf("Failed to create Monitor task\r\n");
+        printf("Failed to create Monitor task.\r\n");
     }
 
     if (false == create_task_led())
     {
-        printf("Failed to create LED task\r\n");
+        printf("Failed to create LED task.\r\n");
     }
 
     if constexpr (features::kEnableLua)
     {
         if (false == create_task_lua())
         {
-            printf("Failed to create Lua task\r\n");
+            printf("Failed to create Lua task.\r\n");
+        }
+    }
+
+    if constexpr (features::kEnableEthernet)
+    {
+        if (false == create_task_ethernet())
+        {
+            printf("Failed to create Ethernet task.\n\r\n");
         }
     }
 

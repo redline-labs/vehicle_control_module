@@ -39,6 +39,10 @@
 
 #include "compiler.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // IEEE defined Registers
 #define GMII_BMCR        0x00   // Basic Control
 #define GMII_BMSR        0x01   // Basic Status
@@ -109,7 +113,7 @@
 #define GMII_RF               (1 << 13) // Remote Fault
 //      Reserved               12       // Write as 0, ignore on read
 #define GMII_PAUSE_MASK       (3 << 10) // 0,0 = No Pause 1,0 = Asymmetric Pause(link partner)
-                                        // 0,1 = Symmetric Pause 1,1 = Symmetric&Asymmetric Pause(local device)   
+                                        // 0,1 = Symmetric Pause 1,1 = Symmetric&Asymmetric Pause(local device)
 #define GMII_100T4               (1 << 9)  // 100BASE-T4 Support
 #define GMII_100TX_FDX           (1 << 8)  // 100BASE-TX Full Duplex Support
 #define GMII_100TX_HDX           (1 << 7)  // 100BASE-TX Half Duplex Support
@@ -185,5 +189,9 @@ uint8_t ethernet_phy_auto_negotiate(Gmac *p_gmac, uint8_t uc_phy_addr);
  * \Return GMAC_OK if successfully, GMAC_TIMEOUT if timeout.
  */
 uint8_t ethernet_phy_reset(Gmac *p_gmac, uint8_t uc_phy_addr);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* #ifndef ETHERNET_PHY_H_INCLUDED */

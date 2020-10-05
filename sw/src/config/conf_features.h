@@ -8,13 +8,14 @@ namespace features
 
 // Enable the Lua interpreter.
 constexpr bool kEnableLua = false;
+constexpr bool kEnableEthernet = true;
 
 // Enable reading the unique ID from Flash.
 constexpr bool kReadFlashUniqueId = true;
 constexpr bool kReadMacFromEeprom = true;
 
 constexpr bool kEnableICache = true;
-constexpr bool kEnableDCache = true;
+constexpr bool kEnableDCache = false;
 
 }  // namespace features
 

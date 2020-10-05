@@ -64,6 +64,7 @@
 #define configUSE_MALLOC_FAILED_HOOK			0
 #define configUSE_APPLICATION_TASK_TAG			0
 #define configUSE_COUNTING_SEMAPHORES			1
+#define configENABLE_BACKWARD_COMPATIBILITY     0
 
 /* The full demo always has tasks to run so the tick will never be turned off.
 The blinky demo will use the default tickless idle implementation to turn the
@@ -86,8 +87,9 @@ FreeRTOS/Source/tasks.c for limitations. */
 #define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
 
 /* Memory allocation related definitions. */
-#define configSUPPORT_STATIC_ALLOCATION         1
-#define configSUPPORT_DYNAMIC_ALLOCATION        0
+#define configSUPPORT_STATIC_ALLOCATION         (1U)
+#define configSUPPORT_DYNAMIC_ALLOCATION        (1U)
+#define configTOTAL_HEAP_SIZE                   (10240U)
 
 /* Software timer definitions. */
 #define configUSE_TIMERS				1
@@ -131,6 +133,8 @@ to all Cortex-M ports, and do not rely on any particular library functions. */
 /* !!!! configMAX_SYSCALL_INTERRUPT_PRIORITY must not be set to zero !!!!
 See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY 	( configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )
+
+#define configMAC_INTERRUPT_PRIORITY            (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY)
 
 /* Normal assert() semantics without relying on the provision of an assert.h
 header file. */

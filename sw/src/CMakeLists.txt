@@ -8,10 +8,6 @@ include_directories(SYSTEM
     FreeRTOS/include
     FreeRTOS/portable/GCC/ARM_CM7/r0p1
 
-    # FreeRTOS-Plus-TCP.
-    FreeRTOS-Plus-TCP/include
-    FreeRTOS-Plus-TCP/portable/Compiler/GCC
-
     # Boards.
     boards
 
@@ -54,6 +50,7 @@ include_directories(SYSTEM
     ASF/sam/drivers/pwm
     ASF/sam/drivers/qspi
     ASF/sam/drivers/spi
+    ASF/sam/drivers/tc
     ASF/sam/drivers/trng
     ASF/sam/drivers/twihs
     ASF/sam/drivers/uart
@@ -75,6 +72,7 @@ add_executable(${PROJECT_NAME}
     freertos_hooks.cpp
     debug_cycle_counter.cpp
 
+    task_ethernet.cpp
     task_led.cpp
     task_lua.cpp
     task_monitor.cpp
@@ -91,18 +89,7 @@ add_executable(${PROJECT_NAME}
     FreeRTOS/timers.c
 
     FreeRTOS/portable/GCC/ARM_CM7/r0p1/port.c
-
-    # FreeRTOS+TCP.
-    FreeRTOS-Plus-TCP/FreeRTOS_ARP.c
-    FreeRTOS-Plus-TCP/FreeRTOS_DHCP.c
-    FreeRTOS-Plus-TCP/FreeRTOS_DNS.c
-    FreeRTOS-Plus-TCP/FreeRTOS_IP.c
-    FreeRTOS-Plus-TCP/FreeRTOS_Sockets.c
-    FreeRTOS-Plus-TCP/FreeRTOS_Stream_Buffer.c
-    FreeRTOS-Plus-TCP/FreeRTOS_TCP_IP.c
-    FreeRTOS-Plus-TCP/FreeRTOS_TCP_WIN.c
-    FreeRTOS-Plus-TCP/FreeRTOS_UDP_IP.c
-    FreeRTOS-Plus-TCP/portable/BufferManagement/BufferAllocation_1.c
+    FreeRTOS/portable/MemMang/heap_4.c
 
     # Lua
     lua/src/lapi.c
@@ -152,6 +139,7 @@ add_executable(${PROJECT_NAME}
     ASF/sam/drivers/chipid/chipid.c
     ASF/sam/drivers/efc/efc.c
     ASF/sam/drivers/gmac/gmac_phy.c
+    ASF/sam/drivers/gmac/gmac_raw_2.c
     ASF/sam/drivers/mcan/mcan.c
     ASF/sam/drivers/mpu/mpu.c
     ASF/sam/drivers/pio/pio.c
@@ -161,6 +149,7 @@ add_executable(${PROJECT_NAME}
     ASF/sam/drivers/pwm/pwm.c
     ASF/sam/drivers/qspi/qspi.c
     ASF/sam/drivers/spi/spi.c
+    ASF/sam/drivers/tc/tc.c
     ASF/sam/drivers/trng/trng.c
     ASF/sam/drivers/twihs/twihs.c
     ASF/sam/drivers/uart/uart.c
