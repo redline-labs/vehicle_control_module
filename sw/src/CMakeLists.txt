@@ -49,6 +49,7 @@ include_directories(SYSTEM
     ASF/sam/drivers/pmc
     ASF/sam/drivers/pwm
     ASF/sam/drivers/qspi
+    ASF/sam/drivers/rstc
     ASF/sam/drivers/spi
     ASF/sam/drivers/tc
     ASF/sam/drivers/trng
@@ -148,6 +149,7 @@ add_executable(${PROJECT_NAME}
     ASF/sam/drivers/pmc/sleep.c
     ASF/sam/drivers/pwm/pwm.c
     ASF/sam/drivers/qspi/qspi.c
+    ASF/sam/drivers/rstc/rstc.c
     ASF/sam/drivers/spi/spi.c
     ASF/sam/drivers/tc/tc.c
     ASF/sam/drivers/trng/trng.c

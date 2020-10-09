@@ -18,7 +18,7 @@
 #include <efc.h>
 #include <ethernet_phy.h>
 #include <fpu.h>
-
+#include <rstc.h>
 #include <serial.h>
 #include <stdio_serial.h>
 #include <twihs.h>
@@ -68,6 +68,39 @@ static Eui48MacAddress at24mac_get_mac_address()
     return mac_addr;
 }
 
+static const char* get_reset_reason()
+{
+    uint32_t cause = rstc_get_reset_cause(RSTC);
+    //! [reset_get_status]
+
+    /* Decode the reset reason. */
+    switch (cause)
+    {
+        case RSTC_GENERAL_RESET:
+            return "General Reset";
+            break;
+
+        case RSTC_BACKUP_RESET:
+            return "Backup Reset";
+            break;
+
+        case RSTC_WATCHDOG_RESET:
+            return "Watchdog Reset";
+            break;
+
+        case RSTC_SOFTWARE_RESET:
+            return "Software Reset";
+            break;
+
+        case RSTC_USER_RESET:
+            return "User Reset";
+            break;
+
+        default:
+            return "Invalid reset reason!";
+    }
+}
+
 int main()
 {
     /* Initialize the SAM system */
@@ -89,6 +122,7 @@ int main()
     printf("SRAM: %s\n\r", get_chip_id_sram_size_str(chipid_data.ul_sramsiz));
     printf("Sysclock: %ld MHz\n\r", sysclk_get_cpu_hz() / 1000000UL);
     printf("FPU enabled: %s\n\r", fpu_is_enabled() ? "true" : "false");
+    printf("Reset cause: %s\n\r", get_reset_reason());
 
     if constexpr (features::kReadFlashUniqueId)
     {
