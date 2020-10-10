@@ -41,15 +41,12 @@
  * See http://www.freertos.org/a00110.html
  *----------------------------------------------------------*/
 
-/* For definition of BOARD_MCK. */
-#include "board.h"
-
 #define configUSE_PREEMPTION					1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION	1
 #define configUSE_QUEUE_SETS					1
 #define configUSE_IDLE_HOOK						0
 #define configUSE_TICK_HOOK						0
-#define configCPU_CLOCK_HZ						(BOARD_MCK)
+#define configCPU_CLOCK_HZ						(300000000UL)
 #define configTICK_RATE_HZ						(100U)
 #define configMAX_PRIORITIES					(5U)
 #define configMINIMAL_STACK_SIZE				(130U)
@@ -89,7 +86,7 @@ FreeRTOS/Source/tasks.c for limitations. */
 /* Memory allocation related definitions. */
 #define configSUPPORT_STATIC_ALLOCATION         (1U)
 #define configSUPPORT_DYNAMIC_ALLOCATION        (1U)
-#define configTOTAL_HEAP_SIZE                   (10240U)
+#define configTOTAL_HEAP_SIZE                   (20480U)
 
 /* Software timer definitions. */
 #define configUSE_TIMERS				1

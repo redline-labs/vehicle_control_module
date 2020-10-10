@@ -29,6 +29,11 @@ struct Eui48MacAddress
         return value[idx];
     }
 
+    constexpr const uint8_t& operator[](uint8_t idx) const noexcept
+    {
+        return value[idx];
+    }
+
     constexpr uint8_t size() noexcept
     {
         return value.size();

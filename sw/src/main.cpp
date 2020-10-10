@@ -14,6 +14,8 @@
 #include <FreeRTOS.h>
 #include <task.h>
 
+#include <FreeRTOS_IP.h>
+
 #include <chipid.h>
 #include <efc.h>
 #include <ethernet_phy.h>
@@ -138,14 +140,14 @@ int main()
         printf("Unique ID: %s\n\r", reinterpret_cast<char*>(&(unique_id[0])) + 1U);
     }
 
-    Eui48MacAddress g_mac_addr = {};
+    Eui48MacAddress mac_addr = {};
     if constexpr (features::kReadMacFromEeprom)
     {
-        g_mac_addr = at24mac_get_mac_address();
+        mac_addr = at24mac_get_mac_address();
     }
 
-    printf("MAC Address (%s): %02X:%02X:%02X:%02X:%02X:%02X\n\r", g_mac_addr.unique ? "Unique" : "Hardcoded",
-        g_mac_addr[0], g_mac_addr[1], g_mac_addr[2], g_mac_addr[3], g_mac_addr[4], g_mac_addr[5]);
+    printf("MAC Address (%s): %02X:%02X:%02X:%02X:%02X:%02X\n\r", mac_addr.unique ? "Unique" : "Hardcoded",
+        mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
     printf("IP Address: %d.%d.%d.%d\n\r", ETHERNET_CONF_IPADDR0, ETHERNET_CONF_IPADDR1, ETHERNET_CONF_IPADDR2,
         ETHERNET_CONF_IPADDR3);
 
@@ -174,7 +176,7 @@ int main()
 
     if constexpr (features::kEnableEthernet)
     {
-        if (false == create_task_ethernet())
+        if (false == create_task_ethernet(mac_addr))
         {
             printf("Failed to create Ethernet task.\n\r\n");
         }

@@ -8,6 +8,11 @@ include_directories(SYSTEM
     FreeRTOS/include
     FreeRTOS/portable/GCC/ARM_CM7/r0p1
 
+    # FreeRTOS-Plus-TCP.
+    FreeRTOS-Plus-TCP/include
+    FreeRTOS-Plus-TCP/portable/Compiler/GCC
+    FreeRTOS-Plus-TCP/portable/NetworkInterface/include
+
     # Boards.
     boards
 
@@ -90,7 +95,25 @@ add_executable(${PROJECT_NAME}
     FreeRTOS/timers.c
 
     FreeRTOS/portable/GCC/ARM_CM7/r0p1/port.c
-    FreeRTOS/portable/MemMang/heap_4.c
+    FreeRTOS/portable/MemMang/heap_4.c  # TODO: Remove me!
+
+    # FreeRTOS-Plus-TCP.
+    FreeRTOS-Plus-TCP/FreeRTOS_ARP.c
+    FreeRTOS-Plus-TCP/FreeRTOS_DHCP.c
+    FreeRTOS-Plus-TCP/FreeRTOS_DNS.c
+    FreeRTOS-Plus-TCP/FreeRTOS_IP.c
+    FreeRTOS-Plus-TCP/FreeRTOS_Sockets.c
+    FreeRTOS-Plus-TCP/FreeRTOS_Stream_Buffer.c
+    FreeRTOS-Plus-TCP/FreeRTOS_TCP_IP.c
+    FreeRTOS-Plus-TCP/FreeRTOS_TCP_WIN.c
+    FreeRTOS-Plus-TCP/FreeRTOS_UDP_IP.c
+    # FreeRTOS-Plus-TCP/portable/BufferManagement/BufferAllocation_1.c
+    FreeRTOS-Plus-TCP/portable/BufferManagement/BufferAllocation_2.c
+    # FreeRTOS-Plus-TCP/portable/NetworkInterface/Common/phyHandling.c
+    # FreeRTOS-Plus-TCP/portable/NetworkInterface/DriverSAM/gmac_SAM.c
+    # FreeRTOS-Plus-TCP/portable/NetworkInterface/DriverSAM/NetworkInterface.c
+    FreeRTOS-Plus-TCP/tools/tcp_dump_packets.c
+    FreeRTOS-Plus-TCP/tools/tcp_mem_stats.c
 
     # Lua
     lua/src/lapi.c
