@@ -112,8 +112,8 @@ add_executable(${PROJECT_NAME}
     # FreeRTOS-Plus-TCP/portable/NetworkInterface/Common/phyHandling.c
     # FreeRTOS-Plus-TCP/portable/NetworkInterface/DriverSAM/gmac_SAM.c
     # FreeRTOS-Plus-TCP/portable/NetworkInterface/DriverSAM/NetworkInterface.c
-    FreeRTOS-Plus-TCP/tools/tcp_dump_packets.c
-    FreeRTOS-Plus-TCP/tools/tcp_mem_stats.c
+    #FreeRTOS-Plus-TCP/tools/tcp_dump_packets.c
+    #FreeRTOS-Plus-TCP/tools/tcp_mem_stats.c
 
     # Lua
     lua/src/lapi.c
