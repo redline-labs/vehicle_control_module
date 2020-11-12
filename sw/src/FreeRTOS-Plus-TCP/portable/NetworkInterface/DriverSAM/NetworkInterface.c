@@ -44,12 +44,15 @@
 
 /* Some files from the Atmel Software Framework */
 /* gmac_SAM.[ch] is a combination of the gmac.[ch] for both SAM4E and SAME70. */
+#include "conf_clock.h"
 #include "gmac_SAM.h"
 #include <sysclk.h>
 #include "phyhandling.h"
+#include "ethernet_phy.h"
 
 /* This file is included to see if 'CONF_BOARD_ENABLE_CACHE' is defined. */
-#include "conf_board.h"
+//#include "conf_board.h"
+#include "conf_eth.h"
 
 
 /* Interrupt events to process.  Currently only the Rx event is processed
@@ -198,9 +201,6 @@ static const uint8_t llmnr_mac_address[] = { 0x01, 0x00, 0x5E, 0x00, 0x00, 0xFC 
 /* The GMAC object as defined by the ASF drivers. */
 static gmac_device_t gs_gmac_dev;
 
-/* MAC address to use. */
-extern const uint8_t ucMACAddress[ 6 ];
-
 /* Holds the handle of the task used as a deferred interrupt processor.  The
  * handle is used so direct notifications can be sent to the task for all EMAC/DMA
  * related interrupts. */
@@ -258,7 +258,7 @@ void GMAC_Handler( void )
 
     /* gmac_handler() may call xRxCallback() which may change
      * the value of xGMACSwitchRequired. */
-    gmac_handler( &gs_gmac_dev );
+    gmac_handler(&gs_gmac_dev, GMAC_QUE_0);
 
     if( xGMACSwitchRequired != pdFALSE )
     {
@@ -458,6 +458,7 @@ BaseType_t xNetworkInterfaceInitialise( void )
 
 BaseType_t xGetPhyLinkStatus( void )
 {
+    /*
     BaseType_t xReturn;
 
     if( xPhyObject.ulLinkStatusMask != 0 )
@@ -469,7 +470,8 @@ BaseType_t xGetPhyLinkStatus( void )
         xReturn = pdFAIL;
     }
 
-    return xReturn;
+    return xReturn;*/
+    return true;
 }
 /*-----------------------------------------------------------*/
 
@@ -515,11 +517,12 @@ BaseType_t xNetworkInterfaceOutput( NetworkBufferDescriptor_t * const pxDescript
      * statement. */
     do
     {
+        /*
         if( xPhyObject.ulLinkStatusMask == 0ul )
         {
-            /* Do not attempt to send packets as long as the Link Status is low. */
+            // Do not attempt to send packets as long as the Link Status is low.
             break;
-        }
+        }*/
 
         if( xTXDescriptorSemaphore == NULL )
         {
@@ -585,7 +588,7 @@ static BaseType_t prvGMACInit( void )
     memset( &gmac_option, '\0', sizeof( gmac_option ) );
     gmac_option.uc_copy_all_frame = 0;
     gmac_option.uc_no_boardcast = 0;
-    memcpy( gmac_option.uc_mac_addr, ucMACAddress, sizeof( gmac_option.uc_mac_addr ) );
+    memcpy( gmac_option.uc_mac_addr, FreeRTOS_GetMACAddress(), sizeof( gmac_option.uc_mac_addr ) );
 
     gs_gmac_dev.p_hw = GMAC;
     gmac_dev_init( GMAC, &gs_gmac_dev, &gmac_option );
@@ -594,27 +597,49 @@ static BaseType_t prvGMACInit( void )
     NVIC_EnableIRQ( GMAC_IRQn );
 
     {
-        /* Set MDC clock divider. */
-        gmac_set_mdc_clock( GMAC, sysclk_get_cpu_hz() );
-
+/*
         vPhyInitialise( &xPhyObject, xPHY_Read, xPHY_Write );
         xPhyDiscover( &xPhyObject );
         xPhyConfigure( &xPhyObject, &xPHYProperties );
 
-        /* For a reset / reconfigure of the EMAC. */
+        // For a reset / reconfigure of the EMAC.
         prvEthernetUpdateConfig( pdTRUE );
+*/
+
+        /* Init MAC PHY driver */
+        if (ethernet_phy_init(GMAC, BOARD_GMAC_PHY_ADDR, sysclk_get_peripheral_hz())
+                        != GMAC_OK) {
+            puts("PHY Initialize ERROR!\r");
+            return false;
+        }
+
+        /* Auto Negotiate, work in RMII mode */
+        if (ethernet_phy_auto_negotiate(GMAC, BOARD_GMAC_PHY_ADDR) != GMAC_OK)
+        {
+
+            puts("Auto Negotiate ERROR!\r");
+            return false;
+        }
+
+        /* Establish ethernet link */
+        if (ethernet_phy_set_link(GMAC, BOARD_GMAC_PHY_ADDR, 1) != GMAC_OK)
+        {
+            puts("Set link ERROR!\r");
+            return false;
+        }
+
 
         /* Select Media Independent Interface type */
-        #if ( SAME70 != 0 )
+        //#if ( SAME70 != 0 )
             {
                 /* Selecting RMII mode. */
                 GMAC->GMAC_UR &= ~GMAC_UR_RMII;
             }
-        #else
+        /*#else
             {
                 gmac_select_mii_mode( GMAC, ETH_PHY_MODE );
             }
-        #endif
+        #endif*/
 
         gmac_enable_transmit( GMAC, true );
         gmac_enable_receive( GMAC, true );
@@ -965,15 +990,17 @@ static void prvEMACHandlerTask( void * pvParameters )
             ulISREvents &= ~EMAC_IF_ERR_EVENT;
         }
 
+/*
         gmac_enable_management( GMAC, true );
 
         if( xPhyCheckLinkStatus( &xPhyObject, xResult ) != 0 )
         {
-            /* Something has changed to a Link Status, need re-check. */
+            // Something has changed to a Link Status, need re-check.
             prvEthernetUpdateConfig( pdFALSE );
         }
 
         gmac_enable_management( GMAC, false );
+        */
     }
 }
 /*-----------------------------------------------------------*/

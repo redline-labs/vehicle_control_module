@@ -109,9 +109,9 @@ add_executable(${PROJECT_NAME}
     FreeRTOS-Plus-TCP/FreeRTOS_UDP_IP.c
     # FreeRTOS-Plus-TCP/portable/BufferManagement/BufferAllocation_1.c
     FreeRTOS-Plus-TCP/portable/BufferManagement/BufferAllocation_2.c
-    # FreeRTOS-Plus-TCP/portable/NetworkInterface/Common/phyHandling.c
-    # FreeRTOS-Plus-TCP/portable/NetworkInterface/DriverSAM/gmac_SAM.c
-    # FreeRTOS-Plus-TCP/portable/NetworkInterface/DriverSAM/NetworkInterface.c
+    FreeRTOS-Plus-TCP/portable/NetworkInterface/Common/phyHandling.c
+    FreeRTOS-Plus-TCP/portable/NetworkInterface/DriverSAM/gmac_SAM.c
+    FreeRTOS-Plus-TCP/portable/NetworkInterface/DriverSAM/NetworkInterface.c
     #FreeRTOS-Plus-TCP/tools/tcp_dump_packets.c
     #FreeRTOS-Plus-TCP/tools/tcp_mem_stats.c
 
@@ -163,7 +163,7 @@ add_executable(${PROJECT_NAME}
     ASF/sam/drivers/chipid/chipid.c
     ASF/sam/drivers/efc/efc.c
     ASF/sam/drivers/gmac/gmac_phy.c
-    ASF/sam/drivers/gmac/gmac_raw_2.c
+    #ASF/sam/drivers/gmac/gmac_raw_2.c
     ASF/sam/drivers/mcan/mcan.c
     ASF/sam/drivers/mpu/mpu.c
     ASF/sam/drivers/pio/pio.c

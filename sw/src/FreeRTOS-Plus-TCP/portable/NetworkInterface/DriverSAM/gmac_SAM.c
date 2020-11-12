@@ -69,12 +69,13 @@
 
 #include "compiler.h"
 #include "gmac_SAM.h"
+#include "pmc.h"
 
-#if ( SAME70 != 0 )
-    /* This file is included to see if 'CONF_BOARD_ENABLE_CACHE' is defined. */
-    #include "conf_board.h"
-    #include "core_cm7.h"
-#endif
+#include "conf_eth.h"
+
+/* This file is included to see if 'CONF_BOARD_ENABLE_CACHE' is defined. */
+//#include "conf_board.h"
+#include "core_cm7.h"
 
 /*/ @cond 0 */
 /**INDENT-OFF**/
@@ -114,22 +115,20 @@
 #define NETWORK_BUFFER_SIZE    1536
 
 __attribute__( ( aligned( 32 ) ) )
-__attribute__( ( section( ".first_data" ) ) )
+//__attribute__( ( section( ".first_data" ) ) )
 uint8_t ucNetworkPackets[ ipconfigNUM_NETWORK_BUFFER_DESCRIPTORS * NETWORK_BUFFER_SIZE ];
 
 /** TX descriptor lists */
-__attribute__( ( section( ".first_data" ) ) )
+//__attribute__( ( section( ".first_data" ) ) )
 COMPILER_ALIGNED( 8 )
 static gmac_tx_descriptor_t gs_tx_desc[ GMAC_TX_BUFFERS ];
 
-#if ( SAME70 != 0 )
-    __attribute__( ( section( ".first_data" ) ) )
-    COMPILER_ALIGNED( 8 )
-    static gmac_tx_descriptor_t gs_tx_desc_null;
-#endif
+//__attribute__( ( section( ".first_data" ) ) )
+COMPILER_ALIGNED( 8 )
+static gmac_tx_descriptor_t gs_tx_desc_null;
 
 /** RX descriptors lists */
-__attribute__( ( section( ".first_data" ) ) )
+//__attribute__( ( section( ".first_data" ) ) )
 COMPILER_ALIGNED( 8 )
 static gmac_rx_descriptor_t gs_rx_desc[ GMAC_RX_BUFFERS ];
 
@@ -139,14 +138,14 @@ static gmac_rx_descriptor_t gs_rx_desc[ GMAC_RX_BUFFERS ];
  * 1K Boundaries. Receive buffer manager write operations are burst of 2 words => 3 lsb bits
  * of the address shall be set to 0.
  */
-    __attribute__( ( section( ".first_data" ) ) )
+    //__attribute__( ( section( ".first_data" ) ) )
     COMPILER_ALIGNED( 8 )
     static uint8_t gs_uc_tx_buffer[ GMAC_TX_BUFFERS * GMAC_TX_UNITSIZE ];
 #endif /* ipconfigZERO_COPY_TX_DRIVER */
 
 #if ( ipconfigZERO_COPY_RX_DRIVER == 0 )
     /** Receive Buffer */
-    __attribute__( ( section( ".first_data" ) ) )
+    //__attribute__( ( section( ".first_data" ) ) )
     COMPILER_ALIGNED( 8 )
     static uint8_t gs_uc_rx_buffer[ GMAC_RX_BUFFERS * GMAC_RX_UNITSIZE ];
 #endif /* ipconfigZERO_COPY_RX_DRIVER */
@@ -269,18 +268,16 @@ void gmac_reset_tx_mem( gmac_device_t * p_dev )
     /* Set the WRAP bit in the last descriptor. */
     gs_tx_desc[ GMAC_TX_BUFFERS - 1 ].status.val = GMAC_TXD_USED | GMAC_TXD_WRAP;
 
-    /* Set transmit buffer queue */
+    /* Set transmSAME70Sit buffer queue */
     gmac_set_tx_queue( p_hw, ( uint32_t ) gs_tx_desc );
-    #if ( SAME70 != 0 )
-        {
-            gmac_set_tx_priority_queue( p_hw, ( uint32_t ) &gs_tx_desc_null, GMAC_QUE_1 );
-            gmac_set_tx_priority_queue( p_hw, ( uint32_t ) &gs_tx_desc_null, GMAC_QUE_2 );
-            /* Note that SAME70 REV B had 6 priority queues. */
-            gmac_set_tx_priority_queue( p_hw, ( uint32_t ) &gs_tx_desc_null, GMAC_QUE_3 );
-            gmac_set_tx_priority_queue( p_hw, ( uint32_t ) &gs_tx_desc_null, GMAC_QUE_4 );
-            gmac_set_tx_priority_queue( p_hw, ( uint32_t ) &gs_tx_desc_null, GMAC_QUE_5 );
-        }
-    #endif
+
+    gmac_set_tx_priority_queue( p_hw, ( uint32_t ) &gs_tx_desc_null, GMAC_QUE_1 );
+    gmac_set_tx_priority_queue( p_hw, ( uint32_t ) &gs_tx_desc_null, GMAC_QUE_2 );
+    // Note that SAME70 REV B had 6 priority queues.
+    gmac_set_tx_priority_queue( p_hw, ( uint32_t ) &gs_tx_desc_null, GMAC_QUE_3 );
+    gmac_set_tx_priority_queue( p_hw, ( uint32_t ) &gs_tx_desc_null, GMAC_QUE_4 );
+    gmac_set_tx_priority_queue( p_hw, ( uint32_t ) &gs_tx_desc_null, GMAC_QUE_5 );
+
 }
 
 /**
@@ -368,6 +365,7 @@ static uint8_t gmac_init_mem( Gmac * p_gmac,
     /* Set up the interrupts for transmission and errors */
     gmac_enable_interrupt( p_gmac,
                            GMAC_IER_RLEX |   /* Enable retry limit  exceeded interrupt. */
+                           GMAC_IER_RCOMP |  /* Enable receive complete interrupt. */
                            GMAC_IER_RXUBR |  /* Enable receive used bit read interrupt. */
                            GMAC_IER_ROVR |   /* Enable receive overrun interrupt. */
                            GMAC_IER_TCOMP |  /* Enable transmit complete interrupt. */
@@ -375,8 +373,7 @@ static uint8_t gmac_init_mem( Gmac * p_gmac,
                            GMAC_IER_TFC |    /* Enable transmit buffers exhausted in mid-frame interrupt. */
                            GMAC_IER_HRESP |  /* Enable Hresp not OK interrupt. */
                            GMAC_IER_PFNZ |   /* Enable pause frame received interrupt. */
-                           GMAC_IER_PTZ |    /* Enable pause time zero interrupt. */
-                           GMAC_IER_RCOMP ); /* Enable receive complete interrupt. */
+                           GMAC_IER_PTZ);    /* Enable pause time zero interrupt. */
 
     return GMAC_OK;
 }
@@ -392,6 +389,8 @@ void gmac_dev_init( Gmac * p_gmac,
                     gmac_device_t * p_gmac_dev,
                     gmac_options_t * p_opt )
 {
+    pmc_enable_periph_clk(ID_GMAC);
+
     /* Disable TX & RX and more */
     gmac_network_control( p_gmac, 0 );
     gmac_disable_interrupt( p_gmac, ~0u );
@@ -402,13 +401,11 @@ void gmac_dev_init( Gmac * p_gmac,
     gmac_clear_rx_status( p_gmac, GMAC_RSR_RXOVR | GMAC_RSR_REC | GMAC_RSR_BNA
                           | GMAC_RSR_HNO );
 
-    #ifndef GMAC_TSR_UND
-        /* GMAC_TSR_UND is only defined by SAM4E. */
-    #define GMAC_TSR_UND    0ul
-    #endif
+    // RD
     /* Clear all status bits in the transmit status register */
-    gmac_clear_tx_status( p_gmac, GMAC_TSR_UBR | GMAC_TSR_COL | GMAC_TSR_RLE
-                          | GMAC_TSR_TFC | GMAC_TSR_TXCOMP | GMAC_TSR_UND );
+    gmac_clear_tx_status(p_gmac, GMAC_TSR_UBR | GMAC_TSR_COL | GMAC_TSR_RLE
+            | GMAC_TSR_TXGO | GMAC_TSR_TFC | GMAC_TSR_TXCOMP | GMAC_TSR_HRESP );
+
 
     /* Clear interrupts */
     gmac_get_interrupt_status( p_gmac );
@@ -445,13 +442,9 @@ void gmac_dev_init( Gmac * p_gmac,
 
         /* Let the GMAC set TX checksum's. */
         ulValue |= GMAC_DCFGR_TXCOEN;
-        #if ( SAME70 != 0 )
-            {
-                /* Transmitter Packet Buffer Memory Size Select:
-                 * Use full configured addressable space (4 Kbytes). */
-                ulValue |= GMAC_DCFGR_TXPBMS;
-            }
-        #endif
+        /* Transmitter Packet Buffer Memory Size Select:
+         * Use full configured addressable space (4 Kbytes). */
+        ulValue |= GMAC_DCFGR_TXPBMS;
 
         /* Clear the DMA Receive Buffer Size (DRBS) field: */
         ulValue &= ~( GMAC_DCFGR_DRBS_Msk );
@@ -614,7 +607,9 @@ uint32_t gmac_dev_read( gmac_device_t * p_gmac_dev,
     nextIdx = p_gmac_dev->ul_rx_idx;
 
     /* Read +2 bytes because buffers are aligned at -2 bytes */
+    #define min(a,b) (((a)<(b))?(a):(b))
     bytesLeft = min( bytesLeft + 2, ( int32_t ) ul_frame_size );
+    #undef min
 
     #if ( __DCACHE_PRESENT != 0 ) && defined( CONF_BOARD_ENABLE_CACHE )
         SCB_InvalidateDCache();
@@ -879,7 +874,7 @@ void gmac_dev_halt( Gmac * p_gmac )
     }
 #endif /* if ( GMAC_STATS != 0 ) */
 
-void gmac_handler( gmac_device_t * p_gmac_dev )
+void gmac_handler( gmac_device_t * p_gmac_dev, gmac_quelist_t queue_idx)
 {
     Gmac * p_hw = p_gmac_dev->p_hw;
 
@@ -890,7 +885,14 @@ void gmac_handler( gmac_device_t * p_gmac_dev )
         int index;
     #endif
 
-    uint32_t ul_isr = gmac_get_interrupt_status( p_hw );
+    uint32_t ul_isr = 0;
+    if(queue_idx == GMAC_QUE_0) {
+        ul_isr = gmac_get_interrupt_status(p_hw);
+    } else {
+        ul_isr = gmac_get_priority_interrupt_status(p_hw, queue_idx);
+    }
+    ul_isr &= ~(gmac_get_interrupt_mask(p_hw) | 0xF8030300);
+
     uint32_t ul_rsr = gmac_get_rx_status( p_hw );
     uint32_t ul_tsr = gmac_get_tx_status( p_hw );
 
@@ -922,7 +924,7 @@ void gmac_handler( gmac_device_t * p_gmac_dev )
     }
 
     /* TX packet */
-    if( ( ul_isr & GMAC_ISR_TCOMP ) || ( ul_tsr & ( GMAC_TSR_TXCOMP | GMAC_TSR_COL | GMAC_TSR_RLE | GMAC_TSR_UND ) ) )
+    if( ( ul_isr & GMAC_ISR_TCOMP ) || ( ul_tsr & ( GMAC_TSR_TXCOMP | GMAC_TSR_COL | GMAC_TSR_RLE ) ) )
     {
         ul_tx_status_flag = GMAC_TSR_TXCOMP;
         /* A frame transmitted */

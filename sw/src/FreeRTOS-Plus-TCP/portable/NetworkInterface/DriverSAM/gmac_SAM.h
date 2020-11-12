@@ -1532,7 +1532,7 @@
                                              gmac_dev_wakeup_cb_t func_wakeup,
                                              uint8_t uc_threshold );
     void gmac_dev_reset( gmac_device_t * p_gmac_dev );
-    void gmac_handler( gmac_device_t * p_gmac_dev );
+    void gmac_handler( gmac_device_t * p_gmac_dev, gmac_quelist_t queue_idx);
 
     void gmac_reset_tx_mem( gmac_device_t * p_dev );
 

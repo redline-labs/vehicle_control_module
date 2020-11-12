@@ -89,8 +89,8 @@ on).  Valid options are pdFREERTOS_BIG_ENDIAN and pdFREERTOS_LITTLE_ENDIAN. */
 /* Define whether the checksums are handled by the driver, or if they need to
 be handled by the TCP/IP stack. */
 #define ipconfigDRIVER_INCLUDED_TX_IP_CHECKSUM      ( 1 )
-#define ipconfigDRIVER_INCLUDED_RX_IP_CHECKSUM      ( 0 )
-#define ipconfigHAS_TX_CRC_OFFLOADING               ( 0 )
+#define ipconfigDRIVER_INCLUDED_RX_IP_CHECKSUM      ( 1 )
+#define ipconfigHAS_TX_CRC_OFFLOADING               ( 1 )
 
 /* Several API's will block until the result is known, or the action has been
 performed, for example FreeRTOS_send() and FreeRTOS_recv().  The timeouts can be
@@ -101,8 +101,8 @@ used as defaults. */
 
 /* The driver used by this demo is not written to support zero copy end to
 end. */
-#define ipconfigZERO_COPY_RX_DRIVER         ( 0 )
-#define ipconfigZERO_COPY_TX_DRIVER         ( 0 )
+#define ipconfigZERO_COPY_RX_DRIVER         ( 1 )
+#define ipconfigZERO_COPY_TX_DRIVER         ( 1 )
 
 /* Include support for LLMNR: Link-local Multicast Name Resolution
 (non-Microsoft).  This allows "ping [hostname]", "ftp [hostname]", etc. when the
@@ -264,7 +264,7 @@ aborted. */
 #define ipconfigUSE_TCP             ( 1 )
 
 /* USE_WIN: Let TCP use windowing mechanism. */
-#define ipconfigUSE_TCP_WIN         ( 1 )
+#define ipconfigUSE_TCP_WIN         ( 0 )
 
 /* The MTU is the maximum number of bytes the payload of a network frame can
 contain.  For normal Ethernet V2 frames the maximum MTU is 1500.  Setting a
@@ -309,6 +309,7 @@ filtering can be removed by using a value other than 1 or 0. */
 16-bits.  This has to do with the contents of the IP-packets: all 32-bit fields
 are 32-bit-aligned, plus 16-bit(!). */
 #define ipconfigPACKET_FILLER_SIZE 2
+#define ETHERNET_CONF_DATA_OFFSET 2
 
 /* Define the size of the pool of TCP window descriptors.  On the average, each
 TCP socket will use up to 2 x 6 descriptors, meaning that it can have 2 x 6
@@ -369,18 +370,18 @@ UDP logging facility is used. */
 /* Set to 1 to print out debug messages.  If ipconfigHAS_DEBUG_PRINTF is set to
 1 then FreeRTOS_debug_printf should be defined to the function used to print
 out the debugging messages. */
-#define ipconfigHAS_DEBUG_PRINTF    0
+#define ipconfigHAS_DEBUG_PRINTF    1
 #if( ipconfigHAS_DEBUG_PRINTF == 1 )
-    #define FreeRTOS_debug_printf(X)    lUDPLoggingPrintf X
+    #define FreeRTOS_debug_printf(X)    printf X
 #endif
 
 /* Set to 1 to print out non debugging messages, for example the output of the
 FreeRTOS_netstat() command, and ping replies.  If ipconfigHAS_PRINTF is set to 1
 then FreeRTOS_printf should be set to the function used to print out the
 messages. */
-#define ipconfigHAS_PRINTF          0
+#define ipconfigHAS_PRINTF          1
 #if( ipconfigHAS_PRINTF == 1 )
-    #define FreeRTOS_printf(X)          lUDPLoggingPrintf X
+    #define FreeRTOS_printf(X)          printf X
 #endif
 
 /* === End of GMAC specifics === */
