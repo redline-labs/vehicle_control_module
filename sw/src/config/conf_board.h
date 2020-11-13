@@ -15,6 +15,8 @@ constexpr bool kEnableTcmAtInit = false;
 
 constexpr bool kEnableTwi = true;
 
+constexpr bool kEnableEthernet = true;
+
 constexpr bool kEnableCan0 = false;
 constexpr bool kEnableCan1 = false;
 

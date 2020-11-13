@@ -5,6 +5,7 @@
 
 #include <array>
 #include <cstdbool>
+#include <cstdint>
 
 struct Eui48MacAddress
 {

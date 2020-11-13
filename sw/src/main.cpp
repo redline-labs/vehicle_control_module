@@ -156,10 +156,10 @@ int main()
     printf("-- FreeRTOS " tskKERNEL_VERSION_NUMBER "\n\r");
     printf("-- " LUA_VERSION "\n\r");
 
-    /*if (false == create_task_monitor())
+    if (false == create_task_monitor())
     {
         printf("Failed to create Monitor task.\r\n");
-    }*/
+    }
 
     if (false == create_task_led())
     {

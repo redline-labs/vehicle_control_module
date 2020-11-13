@@ -16,6 +16,9 @@ include_directories(SYSTEM
     # Boards.
     boards
 
+    # Drivers.
+    drivers/gmac
+
     # CMSIS.
     CMSIS/Core/Include
 
@@ -85,6 +88,9 @@ add_executable(${PROJECT_NAME}
 
     boards/samv71_xplained_ultra/init.cpp
 
+    driver/gmac/gmac_handler.cpp
+    driver/gmac/network_interface.cpp
+
     # FreeRTOS
     FreeRTOS/croutine.c
     FreeRTOS/event_groups.c
@@ -109,9 +115,6 @@ add_executable(${PROJECT_NAME}
     FreeRTOS-Plus-TCP/FreeRTOS_UDP_IP.c
     # FreeRTOS-Plus-TCP/portable/BufferManagement/BufferAllocation_1.c
     FreeRTOS-Plus-TCP/portable/BufferManagement/BufferAllocation_2.c
-    FreeRTOS-Plus-TCP/portable/NetworkInterface/Common/phyHandling.c
-    FreeRTOS-Plus-TCP/portable/NetworkInterface/DriverSAM/gmac_SAM.c
-    FreeRTOS-Plus-TCP/portable/NetworkInterface/DriverSAM/NetworkInterface.c
     #FreeRTOS-Plus-TCP/tools/tcp_dump_packets.c
     #FreeRTOS-Plus-TCP/tools/tcp_mem_stats.c
 

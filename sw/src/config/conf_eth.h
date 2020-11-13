@@ -34,15 +34,6 @@
 #ifndef CONF_EMAC_H_INCLUDED
 #define CONF_EMAC_H_INCLUDED
 
-#include "gmac.h"
-
-/**
- * LWIP_NETIF_TX_SINGLE_PBUF: if this is set to 1, lwIP tries to put all data
- * to be sent into one single pbuf. This is for compatibility with DMA-enabled
- * MACs that do not support scatter-gather.
- */
-#define LWIP_NETIF_TX_SINGLE_PBUF                     1
-
 /** Number of buffer for RX */
 #define GMAC_RX_BUFFERS                               3
 

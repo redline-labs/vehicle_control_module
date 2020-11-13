@@ -445,6 +445,14 @@ void board_init()
         }
     }
 
+    if constexpr (board::kEnableEthernet)
+    {
+        pmc_enable_periph_clk(ID_GMAC);
+
+        // Allow reading the Link status via DIO.
+        //ioport_set_pin_input_mode(PIN_GMAC_SIDET_GPIO, 0U /*IOPORT_MODE_PULLUP*/, IOPORT_SENSE_BOTHEDGES);
+    }
+
     if constexpr (board::kEnableCan0)
     {
         /* Configure the CAN0 TX and RX pins. */
