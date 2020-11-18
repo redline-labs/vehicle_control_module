@@ -15,7 +15,6 @@
 constexpr const char* kEthernetTaskName = "Ethernet";
 constexpr uint32_t kEthernetTaskStackSize = 4096U / sizeof(portSTACK_TYPE);
 constexpr UBaseType_t kEthernetTaskPriority = tskIDLE_PRIORITY + 1;
-constexpr TickType_t kEthernetTaskRateTicks = pdMS_TO_TICKS(500);
 
 static StackType_t ethernet_task_stack[kEthernetTaskStackSize] = {};
 static StaticTask_t ethernet_task_buffer = {};
@@ -100,11 +99,6 @@ static void task_ethernet(void* /*pvParameters*/)
                 break;
             }
         }
-    }
-
-    while (true)
-    {
-        vTaskDelayUntil(&last_wake_time_ticks, kEthernetTaskRateTicks);
     }
 }
 

@@ -113,10 +113,10 @@ add_executable(${PROJECT_NAME}
     FreeRTOS-Plus-TCP/FreeRTOS_TCP_IP.c
     FreeRTOS-Plus-TCP/FreeRTOS_TCP_WIN.c
     FreeRTOS-Plus-TCP/FreeRTOS_UDP_IP.c
-    # FreeRTOS-Plus-TCP/portable/BufferManagement/BufferAllocation_1.c
-    FreeRTOS-Plus-TCP/portable/BufferManagement/BufferAllocation_2.c
-    #FreeRTOS-Plus-TCP/tools/tcp_dump_packets.c
-    #FreeRTOS-Plus-TCP/tools/tcp_mem_stats.c
+    FreeRTOS-Plus-TCP/portable/BufferManagement/BufferAllocation_1.c
+    # FreeRTOS-Plus-TCP/portable/BufferManagement/BufferAllocation_2.c
+    # FreeRTOS-Plus-TCP/tools/tcp_dump_packets.c
+    # FreeRTOS-Plus-TCP/tools/tcp_mem_stats.c
 
     # Lua
     lua/src/lapi.c

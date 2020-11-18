@@ -58,6 +58,7 @@ add_compile_options(
     #-Wcast-align
     #-Wconversion
     #-Wsign-conversion
+    $<$<COMPILE_LANGUAGE:CXX>:-Wno-volatile>
 
     -Wshadow
     -Wlogical-op

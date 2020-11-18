@@ -105,18 +105,14 @@
  * @{
  */
 
-__attribute__( ( aligned( 32 ) ) )
-//__attribute__( ( section( ".first_data" ) ) )
-uint8_t ucNetworkPackets[ipconfigNUM_NETWORK_BUFFER_DESCRIPTORS * NETWORK_BUFFER_SIZE];
-
 /** TX descriptor lists */
 //__attribute__( ( section( ".first_data" ) ) )
 COMPILER_ALIGNED( 8 )
-static gmac_tx_descriptor_t gs_tx_desc[ GMAC_TX_BUFFERS ];
+static gmac_tx_descriptor_t gs_tx_desc[ GMAC_TX_BUFFERS ] = {};
 
 //__attribute__( ( section( ".first_data" ) ) )
 COMPILER_ALIGNED( 8 )
-static gmac_tx_descriptor_t gs_tx_desc_null;
+static gmac_tx_descriptor_t gs_tx_desc_null = {};
 
 /** RX descriptors lists */
 //__attribute__( ( section( ".first_data" ) ) )
@@ -131,22 +127,21 @@ static gmac_rx_descriptor_t gs_rx_desc[ GMAC_RX_BUFFERS ];
  * Always leave one free char as a completely full buffer that has (head == tail),
  * which is the same as empty.
  */
-#define CIRC_SPACE( head, tail, size )    CIRC_CNT( ( tail ), ( ( head ) + 1 ), ( size ) )
+#define CIRC_SPACE(head, tail, size)    CIRC_CNT((tail), ((head) + 1), (size))
 
 /** Circular buffer is empty ? */
-#define CIRC_EMPTY( head, tail )          ( ( head ) == ( tail ) )
+#define CIRC_EMPTY(head, tail )          ( ( head ) == ( tail ) )
 /** Clear circular buffer */
-#define CIRC_CLEAR( head, tail )          do { ( head ) = 0; ( tail ) = 0; } while( 0 )
+#define CIRC_CLEAR(head, tail )          do { ( head ) = 0; ( tail ) = 0; } while( 0 )
 
 /* Two call-back functions that should be defined in NetworkInterface.c */
-extern void xRxCallback(uint32_t ulStatus);
-extern void xTxCallback(uint32_t ulStatus, uint8_t * puc_buffer);
+extern void xRxCallback(uint32_t ulStatus, BaseType_t* task_switch_required);
+extern void xTxCallback(uint8_t * puc_buffer, BaseType_t* task_switch_required);
 extern void returnTxBuffer(uint8_t * puc_buffer);
 
 
 /** Increment head or tail */
-static __inline void circ_inc32( int32_t * lHeadOrTail,
-                                 uint32_t ulSize )
+static __inline void circ_inc32(int32_t * lHeadOrTail, uint32_t ulSize)
 {
     ( *lHeadOrTail )++;
 
@@ -162,57 +157,42 @@ static __inline void circ_inc32( int32_t * lHeadOrTail,
  * \param p_dev Pointer to GMAC driver instance.
  *
  */
-void gmac_reset_tx_mem( gmac_device_t * p_dev )
+void gmac_reset_tx_mem(gmac_device_t* p_dev)
 {
-    Gmac * p_hw = p_dev->p_hw;
-
-    uint32_t ul_index;
-    uint32_t ul_address;
-
     /* Disable TX */
-    gmac_enable_transmit( p_hw, 0 );
+    gmac_enable_transmit(p_dev->p_hw, 0U);
 
+    for(uint32_t ul_index = 0; ul_index < ARRAY_SIZE( gs_tx_desc ); ul_index++ )
     {
-        for( ul_index = 0; ul_index < ARRAY_SIZE( gs_tx_desc ); ul_index++ )
-        {
-            uint32_t ulAddr = gs_tx_desc[ ul_index ].addr;
+        uint32_t ulAddr = gs_tx_desc[ul_index].addr;
 
-            if( ulAddr )
-            {
-                returnTxBuffer( ( uint8_t * ) ulAddr );
-            }
+        if (ulAddr)
+        {
+            returnTxBuffer((uint8_t *)ulAddr );
         }
     }
+
     /* Set up the TX descriptors */
     CIRC_CLEAR( p_dev->l_tx_head, p_dev->l_tx_tail );
 
-    for( ul_index = 0; ul_index < GMAC_TX_BUFFERS; ul_index++ )
+    for(uint32_t ul_index = 0; ul_index < GMAC_TX_BUFFERS; ul_index++ )
     {
-        #if ( ipconfigZERO_COPY_TX_DRIVER != 0 )
-            {
-                ul_address = ( uint32_t ) 0u;
-            }
-        #else
-            {
-                ul_address = ( uint32_t ) ( &( gs_uc_tx_buffer[ ul_index * GMAC_TX_UNITSIZE ] ) );
-            }
-        #endif /* ipconfigZERO_COPY_TX_DRIVER */
-        gs_tx_desc[ ul_index ].addr = ul_address;
+        gs_tx_desc[ ul_index ].addr = 0U;
         gs_tx_desc[ ul_index ].status.val = GMAC_TXD_USED;
     }
 
     /* Set the WRAP bit in the last descriptor. */
-    gs_tx_desc[ GMAC_TX_BUFFERS - 1 ].status.val = GMAC_TXD_USED | GMAC_TXD_WRAP;
+    gs_tx_desc[GMAC_TX_BUFFERS - 1].status.val = GMAC_TXD_USED | GMAC_TXD_WRAP;
 
     /* Set transmSAME70Sit buffer queue */
-    gmac_set_tx_queue( p_hw, ( uint32_t ) gs_tx_desc );
+    gmac_set_tx_queue(p_dev->p_hw, ( uint32_t ) gs_tx_desc );
 
-    gmac_set_tx_priority_queue( p_hw, ( uint32_t ) &gs_tx_desc_null, GMAC_QUE_1 );
-    gmac_set_tx_priority_queue( p_hw, ( uint32_t ) &gs_tx_desc_null, GMAC_QUE_2 );
+    gmac_set_tx_priority_queue(p_dev->p_hw, ( uint32_t )&gs_tx_desc_null, GMAC_QUE_1);
+    gmac_set_tx_priority_queue(p_dev->p_hw, ( uint32_t )&gs_tx_desc_null, GMAC_QUE_2);
     // Note that SAME70 REV B had 6 priority queues.
-    gmac_set_tx_priority_queue( p_hw, ( uint32_t ) &gs_tx_desc_null, GMAC_QUE_3 );
-    gmac_set_tx_priority_queue( p_hw, ( uint32_t ) &gs_tx_desc_null, GMAC_QUE_4 );
-    gmac_set_tx_priority_queue( p_hw, ( uint32_t ) &gs_tx_desc_null, GMAC_QUE_5 );
+    gmac_set_tx_priority_queue(p_dev->p_hw, ( uint32_t )&gs_tx_desc_null, GMAC_QUE_3);
+    gmac_set_tx_priority_queue(p_dev->p_hw, ( uint32_t )&gs_tx_desc_null, GMAC_QUE_4);
+    gmac_set_tx_priority_queue(p_dev->p_hw, ( uint32_t )&gs_tx_desc_null, GMAC_QUE_5);
 
 }
 
@@ -221,26 +201,21 @@ void gmac_reset_tx_mem( gmac_device_t * p_dev )
  *
  * \param p_dev Pointer to GMAC Driver instance.
  */
-static void gmac_reset_rx_mem( gmac_device_t * p_dev )
+static void gmac_reset_rx_mem(gmac_device_t* p_dev)
 {
-    Gmac* p_hw = p_dev->p_hw;
-
-    uint32_t ul_index = 0U;
-    uint32_t ul_address = 0U;
-
     /* Disable RX */
-    gmac_enable_receive(p_hw, 0);
+    gmac_enable_receive(p_dev->p_hw, 0);
 
     /* Set up the RX descriptors */
     p_dev->ul_rx_idx = 0;
 
-    for (ul_index = 0; ul_index < GMAC_RX_BUFFERS; ul_index++)
+    for (uint32_t ul_index = 0; ul_index < GMAC_RX_BUFFERS; ul_index++)
     {
         NetworkBufferDescriptor_t * pxNextNetworkBufferDescriptor;
 
         pxNextNetworkBufferDescriptor = pxGetNetworkBufferWithDescriptor(GMAC_RX_UNITSIZE, 0UL);
         configASSERT(pxNextNetworkBufferDescriptor != nullptr);
-        ul_address = ( uint32_t ) (pxNextNetworkBufferDescriptor->pucEthernetBuffer);
+        uint32_t ul_address = ( uint32_t ) (pxNextNetworkBufferDescriptor->pucEthernetBuffer);
 
         gs_rx_desc[ul_index].addr.val = ul_address & GMAC_RXD_ADDR_MASK;
         gs_rx_desc[ul_index].status.val = 0;
@@ -250,7 +225,7 @@ static void gmac_reset_rx_mem( gmac_device_t * p_dev )
     gs_rx_desc[GMAC_RX_BUFFERS - 1].addr.bm.b_wrap = 1;
 
     /* Set receive buffer queue */
-    gmac_set_rx_queue( p_hw, ( uint32_t ) gs_rx_desc );
+    gmac_set_rx_queue(p_dev->p_hw, (uint32_t)gs_rx_desc);
 }
 
 
@@ -267,29 +242,16 @@ static void gmac_reset_rx_mem( gmac_device_t * p_dev )
  *
  * \return GMAC_OK or GMAC_PARAM.
  */
-static uint8_t gmac_init_mem( Gmac * p_gmac,
-                              gmac_device_t * p_gmac_dev )
+static uint8_t gmac_init_mem(Gmac * p_gmac, gmac_device_t * p_gmac_dev )
 {
-    /* Assign TX buffers */
-    #if ( ipconfigZERO_COPY_TX_DRIVER == 0 )
-        if( ( ( ( uint32_t ) gs_uc_tx_buffer ) & 0x7 ) ||
-            ( ( uint32_t ) p_dev_mm->p_tx_dscr & 0x7 ) )
-        {
-            p_dev_mm->ul_tx_size--;
-        }
-
-        p_gmac_dev->p_tx_buffer =
-            ( uint8_t * ) ( ( ( uint32_t ) gs_uc_tx_buffer ) & 0xFFFFFFF8 );
-    #endif
-
     /* Reset TX & RX Memory */
-    gmac_reset_rx_mem( p_gmac_dev );
-    gmac_reset_tx_mem( p_gmac_dev );
+    gmac_reset_rx_mem(p_gmac_dev);
+    gmac_reset_tx_mem(p_gmac_dev);
 
     /* Enable Rx and Tx, plus the statistics register */
-    gmac_enable_transmit( p_gmac, true );
-    gmac_enable_receive( p_gmac, true );
-    gmac_enable_statistics_write( p_gmac, true );
+    gmac_enable_transmit(p_gmac, true);
+    gmac_enable_receive(p_gmac, true);
+    gmac_enable_statistics_write(p_gmac, true);
 
     /* Set up the interrupts for transmission and errors */
     gmac_enable_interrupt(p_gmac,
@@ -337,13 +299,14 @@ void gmac_dev_init(Gmac* p_gmac, gmac_device_t* p_gmac_dev)
      * ignore broadcasts, and not copy FCS. */
 
     gmac_set_config(p_gmac,
-                    (gmac_get_config( p_gmac ) & ~GMAC_NCFGR_RXBUFO_Msk) |
+                    //(gmac_get_config( p_gmac ) & ~GMAC_NCFGR_RXBUFO_Msk) |
                     GMAC_NCFGR_RFCS |                                //  Remove FCS, frame check sequence (last 4 bytes).
-                    GMAC_NCFGR_PEN |                                 // Pause Enable.
                     GMAC_NCFGR_RXBUFO(ETHERNET_CONF_DATA_OFFSET)  |  // Set Ethernet Offset.
-                    GMAC_RXD_RXCOEN |                                // RXCOEN related function.
+                    GMAC_NCFGR_RXCOEN |                              // RXCOEN related function.
                     GMAC_NCFGR_MAXFS |                               // 1536 Maximum Frame Size.
-                    GMAC_NCFGR_FD);                                  // Full-Duplex
+                    GMAC_NCFGR_FD    |                               // Full-Duplex.
+                    GMAC_NCFGR_DCPF);                                // Disable Copy of Pause Frames.
+
 
     /*
      * GMAC_DCFGR_TXCOEN: (GMAC_DCFGR) Transmitter Checksum Generation Offload Enable.
@@ -360,10 +323,11 @@ void gmac_dev_init(Gmac* p_gmac, gmac_device_t* p_gmac_dev)
      * Use full configured addressable space (4 Kbytes). */
     ulValue |= GMAC_DCFGR_TXPBMS;
 
-    /* Clear the DMA Receive Buffer Size (DRBS) field: */
+    /* These bits determines the size of buffer to use in main AHB system memory when writing received data. The value
+    is defined in multiples of 64 bytes. Clear the DMA Receive Buffer Size (DRBS) field: */
     ulValue &= ~(GMAC_DCFGR_DRBS_Msk);
     /* And set it: */
-    ulValue |= (GMAC_RX_UNITSIZE / 64) << GMAC_DCFGR_DRBS_Pos;
+    ulValue |= GMAC_DCFGR_DRBS(GMAC_RX_UNITSIZE / 64U);
 
     gmac_set_dma(p_gmac, ulValue);
 
@@ -467,6 +431,7 @@ uint32_t gmac_dev_read(gmac_device_t * p_gmac_dev, uint8_t * p_frame, uint32_t u
     {
         /* The driver could not allocate a buffer to receive a packet.
          * Leave the current DMA buffer in place. */
+        configASSERT(false);
     }
 
     do
@@ -495,14 +460,8 @@ uint32_t gmac_dev_read(gmac_device_t * p_gmac_dev, uint8_t * p_frame, uint32_t u
  *
  * \return Length sent.
  */
-uint32_t gmac_dev_write( gmac_device_t * p_gmac_dev,
-                         void * p_buffer,
-                         uint32_t ul_size )
+uint32_t gmac_dev_write(gmac_device_t * p_gmac_dev, void * p_buffer, uint32_t ul_size)
 {
-    volatile gmac_tx_descriptor_t * p_tx_td;
-
-    Gmac* p_hw = p_gmac_dev->p_hw;
-
     /* Check parameter */
     if (ul_size > GMAC_TX_UNITSIZE)
     {
@@ -510,7 +469,7 @@ uint32_t gmac_dev_write( gmac_device_t * p_gmac_dev,
     }
 
     /* Pointers to the current transmit descriptor */
-    p_tx_td = &gs_tx_desc[ p_gmac_dev->l_tx_head ];
+    volatile gmac_tx_descriptor_t* p_tx_td = &gs_tx_desc[p_gmac_dev->l_tx_head];
 
     /* If no free TxTd, buffer can't be sent, schedule the wakeup callback */
     if( ( p_tx_td->status.val & GMAC_TXD_USED ) == 0 )
@@ -547,7 +506,7 @@ uint32_t gmac_dev_write( gmac_device_t * p_gmac_dev,
     circ_inc32( &p_gmac_dev->l_tx_head, GMAC_TX_BUFFERS );
 
     /* Now start to transmit if it is still not done */
-    gmac_start_transmission( p_hw );
+    gmac_start_transmission(p_gmac_dev->p_hw);
 
     return GMAC_OK;
 }
@@ -592,22 +551,13 @@ void gmac_dev_halt( Gmac * p_gmac )
  *
  * \param p_gmac_dev   Pointer to GMAC device instance.
  */
-void gmac_handler(gmac_device_t* p_gmac_dev, gmac_quelist_t queue_idx)
+void gmac_handler(gmac_device_t* p_gmac_dev, BaseType_t* task_switch_required)
 {
     Gmac * p_hw = p_gmac_dev->p_hw;
 
     gmac_tx_descriptor_t * p_tx_td;
-    uint32_t ul_tx_status_flag;
 
-    uint32_t ul_isr = 0;
-    if (queue_idx == GMAC_QUE_0)
-    {
-        ul_isr = gmac_get_interrupt_status(p_hw);
-    }
-    else
-    {
-        ul_isr = gmac_get_priority_interrupt_status(p_hw, queue_idx);
-    }
+    uint32_t ul_isr = gmac_get_interrupt_status(p_hw);
     //ul_isr &= ~(gmac_get_interrupt_mask(p_hw) | 0xF8030300);
 
     uint32_t ul_rsr = gmac_get_rx_status(p_hw);
@@ -625,20 +575,18 @@ void gmac_handler(gmac_device_t* p_gmac_dev, gmac_quelist_t queue_idx)
         }
 
         /* Invoke callbacks which can be useful to wake up a task */
-        xRxCallback(ul_rsr);
+        xRxCallback(ul_rsr, task_switch_required);
     }
 
     /* TX packet */
     if ((ul_isr & GMAC_ISR_TCOMP) || (ul_tsr & (GMAC_TSR_TXCOMP | GMAC_TSR_COL | GMAC_TSR_RLE)))
     {
-        ul_tx_status_flag = GMAC_TSR_TXCOMP;
         /* A frame transmitted */
 
         /* Check RLE */
         if( ul_tsr & GMAC_TSR_RLE )
         {
             /* Status RLE & Number of discarded buffers */
-            ul_tx_status_flag = GMAC_TSR_RLE | CIRC_CNT(p_gmac_dev->l_tx_head, p_gmac_dev->l_tx_tail, GMAC_TX_BUFFERS );
             gmac_reset_tx_mem(p_gmac_dev);
             gmac_enable_transmit(p_hw, 1);
         }
@@ -660,7 +608,7 @@ void gmac_handler(gmac_device_t* p_gmac_dev, gmac_quelist_t queue_idx)
                 }
 
                 /* Notify upper layer that a packet has been sent */
-                xTxCallback( ul_tx_status_flag, (uint8_t *)p_tx_td->addr); /* Function call prvTxCallback */
+                xTxCallback((uint8_t *)p_tx_td->addr, task_switch_required); /* Function call prvTxCallback */
 
                 p_tx_td->addr = 0ul;
 
@@ -668,10 +616,11 @@ void gmac_handler(gmac_device_t* p_gmac_dev, gmac_quelist_t queue_idx)
             } while (CIRC_CNT(p_gmac_dev->l_tx_head, p_gmac_dev->l_tx_tail, GMAC_TX_BUFFERS));
         }
 
+        /*
         if (ul_tsr & GMAC_TSR_RLE)
         {
-            /* Notify upper layer RLE */
-            xTxCallback(ul_tx_status_flag, nullptr);
-        }
+            // Notify upper layer RLE.
+            xTxCallback(nullptr, task_switch_required);
+        }*/
     }
 }

@@ -107,6 +107,6 @@ void gmac_reset_tx_mem(gmac_device_t * p_dev);
 
 void gmac_dev_halt(Gmac * p_gmac);
 
-void gmac_handler( gmac_device_t * p_gmac_dev, gmac_quelist_t queue_idx);
+void gmac_handler( gmac_device_t * p_gmac_dev, BaseType_t* task_switch_required);
 
 #endif /* GMAC_HANDLER_H_ */

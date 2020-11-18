@@ -35,10 +35,10 @@
 #define CONF_EMAC_H_INCLUDED
 
 /** Number of buffer for RX */
-#define GMAC_RX_BUFFERS                               3
+#define GMAC_RX_BUFFERS                               6
 
 /** Number of buffer for TX */
-#define GMAC_TX_BUFFERS                               3
+#define GMAC_TX_BUFFERS                               6
 
 /** MAC PHY operation max retry count */
 #define MAC_PHY_RETRY_MAX                             1000000
