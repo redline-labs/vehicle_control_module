@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.4.1
+ * FreeRTOS Kernel V10.4.3
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -126,8 +126,28 @@
     #define INCLUDE_vTaskSuspend    0
 #endif
 
-#ifndef INCLUDE_vTaskDelayUntil
-    #define INCLUDE_vTaskDelayUntil    0
+#ifdef INCLUDE_xTaskDelayUntil
+    #ifdef INCLUDE_vTaskDelayUntil
+        /* INCLUDE_vTaskDelayUntil was replaced by INCLUDE_xTaskDelayUntil.  Backward
+         * compatibility is maintained if only one or the other is defined, but
+         * there is a conflict if both are defined. */
+        #error INCLUDE_vTaskDelayUntil and INCLUDE_xTaskDelayUntil are both defined.  INCLUDE_vTaskDelayUntil is no longer required and should be removed
+    #endif
+#endif
+
+#ifndef INCLUDE_xTaskDelayUntil
+    #ifdef INCLUDE_vTaskDelayUntil
+        /* If INCLUDE_vTaskDelayUntil is set but INCLUDE_xTaskDelayUntil is not then
+         * the project's FreeRTOSConfig.h probably pre-dates the introduction of
+         * xTaskDelayUntil and setting INCLUDE_xTaskDelayUntil to whatever
+         * INCLUDE_vTaskDelayUntil is set to will ensure backward compatibility.
+         */
+        #define INCLUDE_xTaskDelayUntil INCLUDE_vTaskDelayUntil
+    #endif
+#endif
+
+#ifndef INCLUDE_xTaskDelayUntil
+    #define INCLUDE_xTaskDelayUntil    0
 #endif
 
 #ifndef INCLUDE_vTaskDelay
@@ -160,6 +180,10 @@
 
 #ifndef INCLUDE_uxTaskGetStackHighWaterMark2
     #define INCLUDE_uxTaskGetStackHighWaterMark2    0
+#endif
+
+#ifndef INCLUDE_pxTaskGetStackStart
+	#define INCLUDE_pxTaskGetStackStart 0
 #endif
 
 #ifndef INCLUDE_eTaskGetState
@@ -428,6 +452,23 @@
     #define tracePOST_MOVED_TASK_TO_READY_STATE( pxTCB )
 #endif
 
+#ifndef traceREADDED_TASK_TO_READY_STATE
+	#define traceREADDED_TASK_TO_READY_STATE( pxTCB )	traceMOVED_TASK_TO_READY_STATE( pxTCB )
+#endif
+
+#ifndef traceMOVED_TASK_TO_DELAYED_LIST
+	#define traceMOVED_TASK_TO_DELAYED_LIST()
+#endif
+
+#ifndef traceMOVED_TASK_TO_OVERFLOW_DELAYED_LIST
+	#define traceMOVED_TASK_TO_OVERFLOW_DELAYED_LIST()
+#endif
+
+#ifndef traceMOVED_TASK_TO_SUSPENDED_LIST
+	#define traceMOVED_TASK_TO_SUSPENDED_LIST( pxTCB )
+#endif
+
+
 #ifndef traceQUEUE_CREATE
     #define traceQUEUE_CREATE( pxNewQueue )
 #endif
@@ -674,6 +715,18 @@
 
 #ifndef traceTASK_NOTIFY_GIVE_FROM_ISR
     #define traceTASK_NOTIFY_GIVE_FROM_ISR( uxIndexToNotify )
+#endif
+
+#ifndef traceISR_EXIT_TO_SCHEDULER
+	#define traceISR_EXIT_TO_SCHEDULER()
+#endif
+
+#ifndef traceISR_EXIT
+	#define traceISR_EXIT()
+#endif
+
+#ifndef traceISR_ENTER
+	#define traceISR_ENTER()
 #endif
 
 #ifndef traceSTREAM_BUFFER_CREATE_FAILED

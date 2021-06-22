@@ -189,6 +189,8 @@ static SemaphoreHandle_t xTXDescriptorSemaphore = nullptr;
  */
 void GMAC_Handler()
 {
+    traceISR_ENTER();
+
     BaseType_t xGMACSwitchRequired = pdFALSE;
 
     /* gmac_handler() may call xRxCallback() which may change

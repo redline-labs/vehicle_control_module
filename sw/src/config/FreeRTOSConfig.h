@@ -56,7 +56,7 @@
 #define configIDLE_SHOULD_YIELD					1
 #define configUSE_MUTEXES						1
 #define configQUEUE_REGISTRY_SIZE				8
-#define configCHECK_FOR_STACK_OVERFLOW			2
+#define configCHECK_FOR_STACK_OVERFLOW			0
 #define configUSE_RECURSIVE_MUTEXES				1
 #define configUSE_MALLOC_FAILED_HOOK			0
 #define configUSE_APPLICATION_TASK_TAG			0
@@ -67,11 +67,6 @@
 The blinky demo will use the default tickless idle implementation to turn the
 tick off. */
 #define configUSE_TICKLESS_IDLE					0
-
-/* Run time stats gathering definitions. */
-#define configGENERATE_RUN_TIME_STATS	        1
-#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS  configure_debug_cycle_counter
-#define portGET_RUN_TIME_COUNTER_VALUE          read_debug_cycle_counter
 
 /* This demo makes use of one or more example stats formatting functions.  These
 format the raw data provided by the uxTaskGetSystemState() function in to human
@@ -105,6 +100,11 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelay				1
 #define INCLUDE_eTaskGetState			1
 #define INCLUDE_xTimerPendFunctionCall	1
+
+// Required for SEGGER SYSVIEW
+#define INCLUDE_xTaskGetIdleTaskHandle                          1
+#define INCLUDE_pxTaskGetStackStart                             1
+#include "SEGGER_SYSVIEW_FreeRTOS.h"
 
 /* Cortex-M specific definitions. */
 #ifdef __NVIC_PRIO_BITS

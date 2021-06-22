@@ -22,17 +22,17 @@ void OnProjectLoad (void) {
   //
   // Dialog-generated settings
   //
-  Project.SetTraceSource ("SWO");
   Project.SetDevice ("ATSAMV71Q21");
-  Project.SetHostIF ("USB", "59307102");
+  Project.SetHostIF ("USB", "716186528");
   Project.SetTargetIF ("SWD");
   Project.SetTIFSpeed ("4 MHz");
+  Project.SetTraceSource ("SWO");
   Project.AddSvdFile ("Cortex-M7F.svd");
   Project.AddSvdFile ("ATSAMV71Q21B.svd");
   //
   // User settings
   //
-  File.Open ("$(ProjectDir)/../../sw/build/vehicle_control_module.elf");
+  File.Open ("$(ProjectDir)/../../build/vehicle_control_module.elf");
 
   Project.SetOSPlugin("FreeRTOSPlugin");
 }

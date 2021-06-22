@@ -154,7 +154,7 @@ network event hook at the appropriate times.  If ipconfigUSE_NETWORK_EVENT_HOOK
 is not set to 1 then the network event hook will never be called.  See
 http://www.FreeRTOS.org/FreeRTOS-Plus/FreeRTOS_Plus_UDP/API/vApplicationIPNetworkEventHook.shtml
 */
-#define ipconfigUSE_NETWORK_EVENT_HOOK 1
+#define ipconfigUSE_NETWORK_EVENT_HOOK 0
 
 /* Sockets have a send block time attribute.  If FreeRTOS_sendto() is called but
 a network buffer cannot be obtained then the calling task is held in the Blocked

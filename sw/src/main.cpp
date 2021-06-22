@@ -7,7 +7,6 @@
 #include <task_ethernet.h>
 #include <task_led.h>
 #include <task_lua.h>
-#include <task_monitor.h>
 
 #include <lua.h>
 
@@ -112,6 +111,8 @@ int main()
     /* Initialize the console uart */
     configure_console();
 
+    traceSTART();
+
     chipid_data_t chipid_data = {};
     chipid_read(CHIPID, &chipid_data);
 
@@ -155,11 +156,6 @@ int main()
     printf("-- Compiled (" BUILD_TYPE "): " __DATE__ " " __TIME__ "\n\r");
     printf("-- FreeRTOS " tskKERNEL_VERSION_NUMBER "\n\r");
     printf("-- " LUA_VERSION "\n\r");
-
-    if (false == create_task_monitor())
-    {
-        printf("Failed to create Monitor task.\r\n");
-    }
 
     if (false == create_task_led())
     {

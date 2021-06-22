@@ -74,17 +74,22 @@ include_directories(SYSTEM
     ASF/sam/utils/fpu
     ASF/sam/utils/header_files
     ASF/sam/utils/preprocessor
+
+    # SEGGER SYSVIEW
+    SystemView/Config/
+    SystemView/SEGGER/
+    SystemView/FreeRTOS/
 )
+
+enable_language(ASM)
 
 add_executable(${PROJECT_NAME}
     main.cpp
     freertos_hooks.cpp
-    debug_cycle_counter.cpp
 
     task_ethernet.cpp
     task_led.cpp
     task_lua.cpp
-    task_monitor.cpp
 
     boards/samv71_xplained_ultra/init.cpp
 
@@ -186,6 +191,15 @@ add_executable(${PROJECT_NAME}
     ASF/sam/utils/cmsis/samv71/source/templates/gcc/startup_samv71.c
     ASF/sam/utils/cmsis/samv71/source/templates/system_samv71.c
     ASF/sam/utils/syscalls/gcc/syscalls.c
+
+    # SEGGER SystemView.
+    SystemView/FreeRTOS/Config/Cortex-M/SEGGER_SYSVIEW_Config_FreeRTOS.c
+    SystemView/FreeRTOS/SEGGER_SYSVIEW_FreeRTOS.c
+    SystemView/SEGGER/SEGGER_RTT_printf.c
+    SystemView/SEGGER/SEGGER_RTT.c
+    SystemView/SEGGER/SEGGER_SYSVIEW.c
+    SystemView/SEGGER/Syscalls/SEGGER_RTT_Syscalls_GCC.c
+    SystemView/SEGGER/SEGGER_RTT_ASM_ARMv7M.S
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
