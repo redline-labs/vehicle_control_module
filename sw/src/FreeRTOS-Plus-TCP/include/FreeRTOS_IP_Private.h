@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V2.3.1
+ * FreeRTOS+TCP V2.3.3
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -88,15 +88,8 @@
     #include "pack_struct_end.h"
     typedef struct xETH_HEADER EthernetHeader_t;
 
-    static portINLINE ipDECL_CAST_PTR_FUNC_FOR_TYPE( EthernetHeader_t )
-    {
-        return ( EthernetHeader_t * ) pvArgument;
-    }
-
-    static portINLINE ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( EthernetHeader_t )
-    {
-        return ( const EthernetHeader_t * ) pvArgument;
-    }
+    extern ipDECL_CAST_PTR_FUNC_FOR_TYPE( EthernetHeader_t );
+    extern ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( EthernetHeader_t );
 
 
     #include "pack_struct_start.h"
@@ -132,14 +125,8 @@
     #include "pack_struct_end.h"
     typedef struct xIP_HEADER IPHeader_t;
 
-    static portINLINE ipDECL_CAST_PTR_FUNC_FOR_TYPE( IPHeader_t )
-    {
-        return ( IPHeader_t * ) pvArgument;
-    }
-    static portINLINE ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( IPHeader_t )
-    {
-        return ( const IPHeader_t * ) pvArgument;
-    }
+    extern ipDECL_CAST_PTR_FUNC_FOR_TYPE( IPHeader_t );
+    extern ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( IPHeader_t );
 
 
     #include "pack_struct_start.h"
@@ -154,14 +141,8 @@
     #include "pack_struct_end.h"
     typedef struct xICMP_HEADER ICMPHeader_t;
 
-    static portINLINE ipDECL_CAST_PTR_FUNC_FOR_TYPE( ICMPHeader_t )
-    {
-        return ( ICMPHeader_t * ) pvArgument;
-    }
-    static portINLINE ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( ICMPHeader_t )
-    {
-        return ( const ICMPHeader_t * ) pvArgument;
-    }
+    extern ipDECL_CAST_PTR_FUNC_FOR_TYPE( ICMPHeader_t );
+    extern ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( ICMPHeader_t );
 
 
     #include "pack_struct_start.h"
@@ -208,14 +189,8 @@
     #include "pack_struct_end.h"
     typedef struct xARP_PACKET ARPPacket_t;
 
-    static portINLINE ipDECL_CAST_PTR_FUNC_FOR_TYPE( ARPPacket_t )
-    {
-        return ( ARPPacket_t * ) pvArgument;
-    }
-    static portINLINE ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( ARPPacket_t )
-    {
-        return ( const ARPPacket_t * ) pvArgument;
-    }
+    extern ipDECL_CAST_PTR_FUNC_FOR_TYPE( ARPPacket_t );
+    extern ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( ARPPacket_t );
 
 
     #include "pack_struct_start.h"
@@ -227,14 +202,8 @@
     #include "pack_struct_end.h"
     typedef struct xIP_PACKET IPPacket_t;
 
-    static portINLINE ipDECL_CAST_PTR_FUNC_FOR_TYPE( IPPacket_t )
-    {
-        return ( IPPacket_t * ) pvArgument;
-    }
-    static portINLINE ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( IPPacket_t )
-    {
-        return ( const IPPacket_t * ) pvArgument;
-    }
+    extern ipDECL_CAST_PTR_FUNC_FOR_TYPE( IPPacket_t );
+    extern ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( IPPacket_t );
 
 
     #include "pack_struct_start.h"
@@ -247,11 +216,7 @@
     #include "pack_struct_end.h"
     typedef struct xICMP_PACKET ICMPPacket_t;
 
-    static portINLINE ipDECL_CAST_PTR_FUNC_FOR_TYPE( ICMPPacket_t )
-    {
-        return ( ICMPPacket_t * ) pvArgument;
-    }
-
+    extern ipDECL_CAST_PTR_FUNC_FOR_TYPE( ICMPPacket_t );
 
     #include "pack_struct_start.h"
     struct xUDP_PACKET
@@ -263,14 +228,8 @@
     #include "pack_struct_end.h"
     typedef struct xUDP_PACKET UDPPacket_t;
 
-    static portINLINE ipDECL_CAST_PTR_FUNC_FOR_TYPE( UDPPacket_t )
-    {
-        return ( UDPPacket_t * ) pvArgument;
-    }
-    static portINLINE ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( UDPPacket_t )
-    {
-        return ( const UDPPacket_t * ) pvArgument;
-    }
+    extern ipDECL_CAST_PTR_FUNC_FOR_TYPE( UDPPacket_t );
+    extern ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( UDPPacket_t );
 
     #include "pack_struct_start.h"
     struct xTCP_PACKET
@@ -282,15 +241,8 @@
     #include "pack_struct_end.h"
     typedef struct xTCP_PACKET TCPPacket_t;
 
-    static portINLINE ipDECL_CAST_PTR_FUNC_FOR_TYPE( TCPPacket_t )
-    {
-        return ( TCPPacket_t * ) pvArgument;
-    }
-
-    static portINLINE ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( TCPPacket_t )
-    {
-        return ( const TCPPacket_t * ) pvArgument;
-    }
+    extern ipDECL_CAST_PTR_FUNC_FOR_TYPE( TCPPacket_t );
+    extern ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( TCPPacket_t );
 
 
 /**
@@ -305,14 +257,8 @@
         ICMPPacket_t xICMPPacket; /**< Union member: ICMP packet struct */
     } ProtocolPacket_t;
 
-    static portINLINE ipDECL_CAST_PTR_FUNC_FOR_TYPE( ProtocolPacket_t )
-    {
-        return ( ProtocolPacket_t * ) pvArgument;
-    }
-    static portINLINE ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( ProtocolPacket_t )
-    {
-        return ( const ProtocolPacket_t * ) pvArgument;
-    }
+    extern ipDECL_CAST_PTR_FUNC_FOR_TYPE( ProtocolPacket_t );
+    extern ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( ProtocolPacket_t );
 
 /**
  * Union for protocol headers to save space (RAM). Any packet cannot have more than one of
@@ -325,15 +271,8 @@
         TCPHeader_t xTCPHeader;   /**< Union member: TCP header */
     } ProtocolHeaders_t;
 
-    static portINLINE ipDECL_CAST_PTR_FUNC_FOR_TYPE( ProtocolHeaders_t )
-    {
-        return ( ProtocolHeaders_t * ) pvArgument;
-    }
-
-    static portINLINE ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( ProtocolHeaders_t )
-    {
-        return ( const ProtocolHeaders_t * ) pvArgument;
-    }
+    extern ipDECL_CAST_PTR_FUNC_FOR_TYPE( ProtocolHeaders_t );
+    extern ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( ProtocolHeaders_t );
 
 /* The maximum UDP payload length. */
     #define ipMAX_UDP_PAYLOAD_LENGTH    ( ( ipconfigNETWORK_MTU - ipSIZE_OF_IPv4_HEADER ) - ipSIZE_OF_UDP_HEADER )
@@ -349,19 +288,20 @@
     typedef enum
     {
         eNoEvent = -1,
-        eNetworkDownEvent,  /* 0: The network interface has been lost and/or needs [re]connecting. */
-        eNetworkRxEvent,    /* 1: The network interface has queued a received Ethernet frame. */
-        eNetworkTxEvent,    /* 2: Let the IP-task send a network packet. */
-        eARPTimerEvent,     /* 3: The ARP timer expired. */
-        eStackTxEvent,      /* 4: The software stack has queued a packet to transmit. */
-        eDHCPEvent,         /* 5: Process the DHCP state machine. */
-        eTCPTimerEvent,     /* 6: See if any TCP socket needs attention. */
-        eTCPAcceptEvent,    /* 7: Client API FreeRTOS_accept() waiting for client connections. */
-        eTCPNetStat,        /* 8: IP-task is asked to produce a netstat listing. */
-        eSocketBindEvent,   /* 9: Send a message to the IP-task to bind a socket to a port. */
-        eSocketCloseEvent,  /*10: Send a message to the IP-task to close a socket. */
-        eSocketSelectEvent, /*11: Send a message to the IP-task for select(). */
-        eSocketSignalEvent, /*12: A socket must be signalled. */
+        eNetworkDownEvent,     /* 0: The network interface has been lost and/or needs [re]connecting. */
+        eNetworkRxEvent,       /* 1: The network interface has queued a received Ethernet frame. */
+        eNetworkTxEvent,       /* 2: Let the IP-task send a network packet. */
+        eARPTimerEvent,        /* 3: The ARP timer expired. */
+        eStackTxEvent,         /* 4: The software stack has queued a packet to transmit. */
+        eDHCPEvent,            /* 5: Process the DHCP state machine. */
+        eTCPTimerEvent,        /* 6: See if any TCP socket needs attention. */
+        eTCPAcceptEvent,       /* 7: Client API FreeRTOS_accept() waiting for client connections. */
+        eTCPNetStat,           /* 8: IP-task is asked to produce a netstat listing. */
+        eSocketBindEvent,      /* 9: Send a message to the IP-task to bind a socket to a port. */
+        eSocketCloseEvent,     /*10: Send a message to the IP-task to close a socket. */
+        eSocketSelectEvent,    /*11: Send a message to the IP-task for select(). */
+        eSocketSignalEvent,    /*12: A socket must be signalled. */
+        eSocketSetDeleteEvent, /*13: A socket set must be deleted. */
     } eIPEvent_t;
 
 /**
@@ -382,9 +322,6 @@
     #define ipFRAGMENTATION_PARAMETERS_OFFSET    ( 6 )
     #define ipSOCKET_OPTIONS_OFFSET              ( 6 )
 
-/* Only used when outgoing fragmentation is being used (FreeRTOSIPConfig.h
- * setting. */
-    #define ipGET_UDP_PAYLOAD_OFFSET_FOR_FRAGMENT( usFragmentOffset )    ( ( ( usFragmentOffset ) == 0 ) ? ipUDP_PAYLOAD_OFFSET_IPv4 : ipIP_PAYLOAD_OFFSET )
 
 /* The offset into a UDP packet at which the UDP data (payload) starts. */
     #define ipUDP_PAYLOAD_OFFSET_IPv4    ( sizeof( UDPPacket_t ) )
@@ -418,6 +355,27 @@
 
     #endif /* ipconfigBYTE_ORDER == pdFREERTOS_LITTLE_ENDIAN */
 
+    #if ( ipconfigETHERNET_DRIVER_FILTERS_PACKETS == 0 )
+        #if ( ipconfigBYTE_ORDER == pdFREERTOS_LITTLE_ENDIAN )
+            /* The bits in the two byte IP header field that make up the fragment offset value. */
+            #define ipFRAGMENT_OFFSET_BIT_MASK         ( ( uint16_t ) 0xff1fU )
+            /* The bits in the two byte IP header field that make up the flags value. */
+            #define ipFRAGMENT_FLAGS_BIT_MASK          ( ( uint16_t ) 0x00e0U )
+            /* Don't Fragment Flag */
+            #define ipFRAGMENT_FLAGS_DONT_FRAGMENT     ( ( uint16_t ) 0x0040U )
+            /* More Fragments Flag */
+            #define ipFRAGMENT_FLAGS_MORE_FRAGMENTS    ( ( uint16_t ) 0x0020U )
+        #else
+            /* The bits in the two byte IP header field that make up the fragment offset value. */
+            #define ipFRAGMENT_OFFSET_BIT_MASK         ( ( uint16_t ) 0x1fffU )
+            /* The bits in the two byte IP header field that make up the flags value. */
+            #define ipFRAGMENT_FLAGS_BIT_MASK          ( ( uint16_t ) 0xe000U )
+            /* Don't Fragment Flag */
+            #define ipFRAGMENT_FLAGS_DONT_FRAGMENT     ( ( uint16_t ) 0x4000U )
+            /* More Fragments Flag */
+            #define ipFRAGMENT_FLAGS_MORE_FRAGMENTS    ( ( uint16_t ) 0x2000U )
+        #endif /* ipconfigBYTE_ORDER */
+    #endif /* ipconfigETHERNET_DRIVER_FILTERS_PACKETS */
 
 /* For convenience, a MAC address of all zeros and another of all 0xffs are
  * defined const for quick reference. */
@@ -753,7 +711,7 @@
 
 
 /**
- * Structure tp hold information for a socket.
+ * Structure to hold information for a socket.
  */
     typedef struct xSOCKET
     {
@@ -797,16 +755,15 @@
         } u;                              /**< Union of TCP/UDP socket */
     } FreeRTOS_Socket_t;
 
-    static portINLINE ipDECL_CAST_PTR_FUNC_FOR_TYPE( FreeRTOS_Socket_t )
-    {
-        return ( FreeRTOS_Socket_t * ) pvArgument;
-    }
-    static portINLINE ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( FreeRTOS_Socket_t )
-    {
-        return ( const FreeRTOS_Socket_t * ) pvArgument;
-    }
+    extern ipDECL_CAST_PTR_FUNC_FOR_TYPE( FreeRTOS_Socket_t );
+    extern ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( FreeRTOS_Socket_t );
 
     #if ( ipconfigUSE_TCP == 1 )
+
+/*
+ * Close the socket another time.
+ */
+        void vSocketCloseNextTime( FreeRTOS_Socket_t * pxSocket );
 
 /*
  * Lookup a TCP socket, using a multiple matching: both port numbers and
@@ -826,18 +783,13 @@
     FreeRTOS_Socket_t * pxUDPSocketLookup( UBaseType_t uxLocalPort );
 
 /*
- * Called when the application has generated a UDP packet to send.
- */
-    void vProcessGeneratedUDPPacket( NetworkBufferDescriptor_t * const pxNetworkBuffer );
-
-/*
  * Calculate the upper-layer checksum
  * Works both for UDP, ICMP and TCP packages
  * bOut = true: checksum will be set in outgoing packets
  * bOut = false: checksum will be calculated for incoming packets
  *     returning 0xffff means: checksum was correct
  */
-    uint16_t usGenerateProtocolChecksum( const uint8_t * const pucEthernetBuffer,
+    uint16_t usGenerateProtocolChecksum( uint8_t * pucEthernetBuffer,
                                          size_t uxBufferLength,
                                          BaseType_t xOutgoingPacket );
 
@@ -882,22 +834,9 @@
  * if they are not being used anywhere. But their use depends on the
  * application and hence these functions are defined unconditionally.
  */
-    static portINLINE uint32_t ulChar2u32( const uint8_t * apChr );
-    static portINLINE uint32_t ulChar2u32( const uint8_t * apChr )
-    {
-        return ( ( ( uint32_t ) apChr[ 0 ] ) << 24 ) |
-               ( ( ( uint32_t ) apChr[ 1 ] ) << 16 ) |
-               ( ( ( uint32_t ) apChr[ 2 ] ) << 8 ) |
-               ( ( ( uint32_t ) apChr[ 3 ] ) );
-    }
+    extern uint32_t ulChar2u32( const uint8_t * pucPtr );
 
-    static portINLINE uint16_t usChar2u16( const uint8_t * apChr );
-    static portINLINE uint16_t usChar2u16( const uint8_t * apChr )
-    {
-        return ( uint16_t )
-               ( ( ( ( uint32_t ) apChr[ 0 ] ) << 8 ) |
-                 ( ( ( uint32_t ) apChr[ 1 ] ) ) );
-    }
+    extern uint16_t usChar2u16( const uint8_t * pucPtr );
 
 /* Check a single socket for retransmissions and timeouts */
     BaseType_t xTCPSocketCheck( FreeRTOS_Socket_t * pxSocket );
@@ -962,14 +901,8 @@
             EventGroupHandle_t xSelectGroup;
         } SocketSelect_t;
 
-        static portINLINE ipDECL_CAST_PTR_FUNC_FOR_TYPE( SocketSelect_t )
-        {
-            return ( SocketSelect_t * ) pvArgument;
-        }
-        static portINLINE ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( SocketSelect_t )
-        {
-            return ( const SocketSelect_t * ) pvArgument;
-        }
+        extern ipDECL_CAST_PTR_FUNC_FOR_TYPE( SocketSelect_t );
+        extern ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( SocketSelect_t );
 
         extern void vSocketSelect( SocketSelect_t * pxSocketSet );
 
@@ -980,14 +913,8 @@
             SocketSelect_t * pxSocketSet; /**< The event group for the socket select functionality. */
         } SocketSelectMessage_t;
 
-        static portINLINE ipDECL_CAST_PTR_FUNC_FOR_TYPE( SocketSelectMessage_t )
-        {
-            return ( SocketSelectMessage_t * ) pvArgument;
-        }
-        static portINLINE ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( SocketSelectMessage_t )
-        {
-            return ( const SocketSelectMessage_t * ) pvArgument;
-        }
+        extern ipDECL_CAST_PTR_FUNC_FOR_TYPE( SocketSelectMessage_t );
+        extern ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( SocketSelectMessage_t );
 
     #endif /* ipconfigSUPPORT_SELECT_FUNCTION */
 

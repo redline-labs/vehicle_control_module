@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V2.3.1
+ * FreeRTOS+TCP V2.3.3
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -37,6 +37,13 @@
     #include "FreeRTOSIPConfig.h"
     #include "FreeRTOSIPConfigDefaults.h"
     #include "IPTraceMacroDefaults.h"
+
+/* Constants defining the current version of the FreeRTOS+TCP
+ * network stack. */
+    #define ipFR_TCP_VERSION_NUMBER    "V2.3.3"
+    #define ipFR_TCP_VERSION_MAJOR     2
+    #define ipFR_TCP_VERSION_MINOR     3
+    #define ipFR_TCP_VERSION_BUILD     3
 
 /* Some constants defining the sizes of several parts of a packet.
  * These defines come before including the configuration header files. */
@@ -198,75 +205,18 @@
     #define FreeRTOS_ntohs( x )    FreeRTOS_htons( x )
     #define FreeRTOS_ntohl( x )    FreeRTOS_htonl( x )
 
-    #if ( ipconfigHAS_INLINE_FUNCTIONS == 1 )
-
-        static portINLINE int32_t FreeRTOS_max_int32( int32_t a,
-                                                      int32_t b );
-        static portINLINE uint32_t FreeRTOS_max_uint32( uint32_t a,
-                                                        uint32_t b );
-        static portINLINE int32_t FreeRTOS_min_int32( int32_t a,
-                                                      int32_t b );
-        static portINLINE uint32_t FreeRTOS_min_uint32( uint32_t a,
-                                                        uint32_t b );
-        static portINLINE uint32_t FreeRTOS_round_up( uint32_t a,
-                                                      uint32_t d );
-        static portINLINE uint32_t FreeRTOS_round_down( uint32_t a,
-                                                        uint32_t d );
-        static portINLINE BaseType_t FreeRTOS_min_BaseType( BaseType_t a,
-                                                            BaseType_t b );
-
-        static portINLINE int32_t FreeRTOS_max_int32( int32_t a,
-                                                      int32_t b )
-        {
-            return ( a >= b ) ? a : b;
-        }
-        static portINLINE uint32_t FreeRTOS_max_uint32( uint32_t a,
-                                                        uint32_t b )
-        {
-            return ( a >= b ) ? a : b;
-        }
-        static portINLINE int32_t FreeRTOS_min_int32( int32_t a,
-                                                      int32_t b )
-        {
-            return ( a <= b ) ? a : b;
-        }
-        static portINLINE uint32_t FreeRTOS_min_uint32( uint32_t a,
-                                                        uint32_t b )
-        {
-            return ( a <= b ) ? a : b;
-        }
-        static portINLINE uint32_t FreeRTOS_round_up( uint32_t a,
-                                                      uint32_t d )
-        {
-            return d * ( ( a + d - 1U ) / d );
-        }
-        static portINLINE uint32_t FreeRTOS_round_down( uint32_t a,
-                                                        uint32_t d )
-        {
-            return d * ( a / d );
-        }
-
-        static portINLINE BaseType_t FreeRTOS_min_BaseType( BaseType_t a,
-                                                            BaseType_t b )
-        {
-            return ( a <= b ) ? a : b;
-        }
-
-    #else /* if ( ipconfigHAS_INLINE_FUNCTIONS == 1 ) */
-
-        #define FreeRTOS_max_int32( a, b )       ( ( ( ( int32_t ) ( a ) ) >= ( ( int32_t ) ( b ) ) ) ? ( ( int32_t ) ( a ) ) : ( ( int32_t ) ( b ) ) )
-        #define FreeRTOS_max_uint32( a, b )      ( ( ( ( uint32_t ) ( a ) ) >= ( ( uint32_t ) ( b ) ) ) ? ( ( uint32_t ) ( a ) ) : ( ( uint32_t ) ( b ) ) )
-
-        #define FreeRTOS_min_int32( a, b )       ( ( ( ( int32_t ) a ) <= ( ( int32_t ) b ) ) ? ( ( int32_t ) a ) : ( ( int32_t ) b ) )
-        #define FreeRTOS_min_uint32( a, b )      ( ( ( ( uint32_t ) a ) <= ( ( uint32_t ) b ) ) ? ( ( uint32_t ) a ) : ( ( uint32_t ) b ) )
-
-/*  Round-up: divide a by d and round=up the result. */
-        #define FreeRTOS_round_up( a, d )        ( ( ( uint32_t ) ( d ) ) * ( ( ( ( uint32_t ) ( a ) ) + ( ( uint32_t ) ( d ) ) - 1UL ) / ( ( uint32_t ) ( d ) ) ) )
-        #define FreeRTOS_round_down( a, d )      ( ( ( uint32_t ) ( d ) ) * ( ( ( uint32_t ) ( a ) ) / ( ( uint32_t ) ( d ) ) ) )
-
-        #define FreeRTOS_min_BaseType( a, b )    ( ( ( BaseType_t ) ( a ) ) <= ( ( BaseType_t ) ( b ) ) ? ( ( BaseType_t ) ( a ) ) : ( ( BaseType_t ) ( b ) ) )
-
-    #endif /* ipconfigHAS_INLINE_FUNCTIONS */
+    int32_t FreeRTOS_max_int32( int32_t a,
+                                int32_t b );
+    uint32_t FreeRTOS_max_uint32( uint32_t a,
+                                  uint32_t b );
+    int32_t FreeRTOS_min_int32( int32_t a,
+                                int32_t b );
+    uint32_t FreeRTOS_min_uint32( uint32_t a,
+                                  uint32_t b );
+    uint32_t FreeRTOS_round_up( uint32_t a,
+                                uint32_t d );
+    uint32_t FreeRTOS_round_down( uint32_t a,
+                                  uint32_t d );
 
     #define ipMS_TO_MIN_TICKS( xTimeInMs )    ( ( pdMS_TO_TICKS( ( xTimeInMs ) ) < ( ( TickType_t ) 1U ) ) ? ( ( TickType_t ) 1U ) : pdMS_TO_TICKS( ( xTimeInMs ) ) )
 
@@ -293,6 +243,8 @@
                                 const uint8_t ucGatewayAddress[ ipIP_ADDRESS_LENGTH_BYTES ],
                                 const uint8_t ucDNSServerAddress[ ipIP_ADDRESS_LENGTH_BYTES ],
                                 const uint8_t ucMACAddress[ ipMAC_ADDRESS_LENGTH_BYTES ] );
+
+    TaskHandle_t FreeRTOS_GetIPTaskHandle( void );
 
     void * FreeRTOS_GetUDPPayloadBuffer( size_t uxRequestedSizeBytes,
                                          TickType_t uxBlockTimeTicks );
@@ -330,6 +282,8 @@
     uint32_t FreeRTOS_GetGatewayAddress( void );
     uint32_t FreeRTOS_GetDNSServerAddress( void );
     uint32_t FreeRTOS_GetNetmask( void );
+    BaseType_t xARPWaitResolution( uint32_t ulIPAddress,
+                                   TickType_t uxTicksToWait );
     void FreeRTOS_OutputARPRequest( uint32_t ulIPAddress );
     BaseType_t FreeRTOS_IsNetworkUp( void );
 

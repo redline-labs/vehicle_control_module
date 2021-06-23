@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V2.3.1
+ * FreeRTOS+TCP V2.3.3
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -38,6 +38,8 @@
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
+#include "event_groups.h"
+#include "list.h"
 
 /* FreeRTOS+TCP includes. */
 #include "FreeRTOS_IP.h"
@@ -45,6 +47,7 @@
 #include "FreeRTOS_IP_Private.h"
 #include "FreeRTOS_UDP_IP.h"
 #include "FreeRTOS_ARP.h"
+#include "FreeRTOS_DNS.h"
 #include "FreeRTOS_DHCP.h"
 #include "NetworkInterface.h"
 #include "NetworkBufferManagement.h"
@@ -194,6 +197,15 @@ void vProcessGeneratedUDPPacket( NetworkBufferDescriptor_t * const pxNetworkBuff
 
             pxIPHeader->usLength = FreeRTOS_htons( pxIPHeader->usLength );
             pxIPHeader->ulDestinationIPAddress = pxNetworkBuffer->ulIPAddress;
+
+            /* The stack doesn't support fragments, so the fragment offset field must always be zero.
+             * The header was never memset to zero, so set both the fragment offset and fragmentation flags in one go.
+             */
+            #if ( ipconfigFORCE_IP_DONT_FRAGMENT != 0 )
+                pxIPHeader->usFragmentOffset = ipFRAGMENT_FLAGS_DONT_FRAGMENT;
+            #else
+                pxIPHeader->usFragmentOffset = 0U;
+            #endif
 
             #if ( ipconfigUSE_LLMNR == 1 )
                 {
@@ -392,7 +404,7 @@ BaseType_t xProcessReceivedUDPPacket( NetworkBufferDescriptor_t * pxNetworkBuffe
                 {
                     if( xIsDHCPSocket( pxSocket ) != 0 )
                     {
-                        ( void ) xSendEventToIPTask( eDHCPEvent );
+                        ( void ) xSendDHCPEvent();
                     }
                 }
             #endif

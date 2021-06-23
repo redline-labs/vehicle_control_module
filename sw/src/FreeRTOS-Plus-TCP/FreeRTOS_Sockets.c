@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V2.3.1
+ * FreeRTOS+TCP V2.3.3
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -99,11 +99,14 @@
     {
         return ( F_TCP_UDP_Handler_t * ) pvArgument;
     }
+    /*-----------------------------------------------------------*/
+
     static portINLINE ipDECL_CAST_CONST_PTR_FUNC_FOR_TYPE( F_TCP_UDP_Handler_t )
     {
         return ( const F_TCP_UDP_Handler_t * ) pvArgument;
     }
-#endif
+    /*-----------------------------------------------------------*/
+#endif /* if ( ipconfigUSE_CALLBACKS != 0 ) */
 
 
 /**
@@ -115,7 +118,7 @@ static portINLINE ipDECL_CAST_PTR_FUNC_FOR_TYPE( NetworkBufferDescriptor_t )
 {
     return ( NetworkBufferDescriptor_t * ) pvArgument;
 }
-
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Utility function to cast pointer of a type to pointer of type StreamBuffer_t.
@@ -547,13 +550,16 @@ Socket_t FreeRTOS_socket( BaseType_t xDomain,
  */
     void FreeRTOS_DeleteSocketSet( SocketSet_t xSocketSet )
     {
-        SocketSelect_t * pxSocketSet = ( SocketSelect_t * ) xSocketSet;
+        IPStackEvent_t xCloseEvent;
 
 
-        iptraceMEM_STATS_DELETE( pxSocketSet );
+        xCloseEvent.eEventType = eSocketSetDeleteEvent;
+        xCloseEvent.pvData = ( void * ) xSocketSet;
 
-        vEventGroupDelete( pxSocketSet->xSelectGroup );
-        vPortFree( pxSocketSet );
+        if( xSendEventStructToIPTask( &xCloseEvent, ( TickType_t ) portMAX_DELAY ) == pdFAIL )
+        {
+            FreeRTOS_printf( ( "FreeRTOS_DeleteSocketSet: xSendEventStructToIPTask failed\n" ) );
+        }
     }
 
 #endif /* ipconfigSUPPORT_SELECT_FUNCTION == 1 */
@@ -1433,25 +1439,36 @@ BaseType_t FreeRTOS_closesocket( Socket_t xSocket )
     }
     else
     {
-        #if ( ( ipconfigUSE_TCP == 1 ) && ( ipconfigUSE_CALLBACKS == 1 ) )
+        #if ( ipconfigUSE_CALLBACKS == 1 )
             {
-                if( pxSocket->ucProtocol == ( uint8_t ) FREERTOS_IPPROTO_TCP )
+                #if ( ipconfigUSE_TCP == 1 )
+                    if( pxSocket->ucProtocol == ( uint8_t ) FREERTOS_IPPROTO_TCP )
+                    {
+                        /* Make sure that IP-task won't call the user callback's anymore */
+                        pxSocket->u.xTCP.pxHandleConnected = NULL;
+                        pxSocket->u.xTCP.pxHandleReceive = NULL;
+                        pxSocket->u.xTCP.pxHandleSent = NULL;
+                    }
+                    else
+                #endif
+
+                if( pxSocket->ucProtocol == ( uint8_t ) FREERTOS_IPPROTO_UDP )
                 {
-                    /* Make sure that IP-task won't call the user callback's anymore */
-                    pxSocket->u.xTCP.pxHandleConnected = NULL;
-                    pxSocket->u.xTCP.pxHandleReceive = NULL;
-                    pxSocket->u.xTCP.pxHandleSent = NULL;
+                    /* Clear the two UDP handlers. */
+                    pxSocket->u.xUDP.pxHandleReceive = NULL;
+                    pxSocket->u.xUDP.pxHandleSent = NULL;
                 }
             }
-        #endif /* ( ( ipconfigUSE_TCP == 1 ) && ( ipconfigUSE_CALLBACKS == 1 ) ) */
+        #endif /* ( ipconfigUSE_CALLBACKS == 1 ) */
 
         /* Let the IP task close the socket to keep it synchronised with the
          * packet handling. */
 
-        /* Note when changing the time-out value below, it must be checked who is calling
-         * this function. If it is called by the IP-task, a deadlock could occur.
-         * The IP-task would only call it in case of a user call-back */
-        if( xSendEventStructToIPTask( &xCloseEvent, ( TickType_t ) 0 ) == pdFAIL )
+        /* The timeout value below is only used if this function is called from
+         * a user task. If this function is called by the IP-task, it may fail
+         * to close the socket when the event queue is full.
+         * This should only happen in case of a user call-back. */
+        if( xSendEventStructToIPTask( &xCloseEvent, ( TickType_t ) portMAX_DELAY ) == pdFAIL )
         {
             FreeRTOS_debug_printf( ( "FreeRTOS_closesocket: failed\n" ) );
             xResult = -1;
@@ -1580,8 +1597,8 @@ void * vSocketClose( FreeRTOS_Socket_t * pxSocket )
 
 /**
  * @brief When a child socket gets closed, make sure to update the child-count of the
- *        parent. When a listening parent socket is closed, make sure no child-sockets
- *        keep a pointer to it.
+ *        parent. When a listening parent socket is closed, make sure to close also
+ *        all orphaned child-sockets.
  *
  * @param[in] pxSocketToDelete: The socket being closed.
  */
@@ -1592,23 +1609,45 @@ void * vSocketClose( FreeRTOS_Socket_t * pxSocket )
         FreeRTOS_Socket_t * pxOtherSocket;
         uint16_t usLocalPort = pxSocketToDelete->usLocalPort;
 
-        for( pxIterator = listGET_NEXT( pxEnd );
-             pxIterator != pxEnd;
-             pxIterator = listGET_NEXT( pxIterator ) )
+        if( pxSocketToDelete->u.xTCP.ucTCPState == ( uint8_t ) eTCP_LISTEN )
         {
-            pxOtherSocket = ipCAST_PTR_TO_TYPE_PTR( FreeRTOS_Socket_t, listGET_LIST_ITEM_OWNER( pxIterator ) );
-
-            if( ( pxOtherSocket->u.xTCP.ucTCPState == ( uint8_t ) eTCP_LISTEN ) &&
-                ( pxOtherSocket->usLocalPort == usLocalPort ) &&
-                ( pxOtherSocket->u.xTCP.usChildCount != 0U ) )
+            for( pxIterator = listGET_NEXT( pxEnd );
+                 pxIterator != pxEnd; )
             {
-                pxOtherSocket->u.xTCP.usChildCount--;
-                FreeRTOS_debug_printf( ( "Lost: Socket %u now has %u / %u child%s\n",
-                                         pxOtherSocket->usLocalPort,
-                                         pxOtherSocket->u.xTCP.usChildCount,
-                                         pxOtherSocket->u.xTCP.usBacklog,
-                                         ( pxOtherSocket->u.xTCP.usChildCount == 1U ) ? "" : "ren" ) );
-                break;
+                pxOtherSocket = ipCAST_PTR_TO_TYPE_PTR( FreeRTOS_Socket_t, listGET_LIST_ITEM_OWNER( pxIterator ) );
+
+                /* This needs to be done here, before calling vSocketClose. */
+                pxIterator = listGET_NEXT( pxIterator );
+
+                if( ( pxOtherSocket->u.xTCP.ucTCPState != ( uint8_t ) eTCP_LISTEN ) &&
+                    ( pxOtherSocket->usLocalPort == usLocalPort ) &&
+                    ( ( pxOtherSocket->u.xTCP.bits.bPassQueued != pdFALSE_UNSIGNED ) ||
+                      ( pxOtherSocket->u.xTCP.bits.bPassAccept != pdFALSE_UNSIGNED ) ) )
+                {
+                    vSocketClose( pxOtherSocket );
+                }
+            }
+        }
+        else
+        {
+            for( pxIterator = listGET_NEXT( pxEnd );
+                 pxIterator != pxEnd;
+                 pxIterator = listGET_NEXT( pxIterator ) )
+            {
+                pxOtherSocket = ipCAST_PTR_TO_TYPE_PTR( FreeRTOS_Socket_t, listGET_LIST_ITEM_OWNER( pxIterator ) );
+
+                if( ( pxOtherSocket->u.xTCP.ucTCPState == ( uint8_t ) eTCP_LISTEN ) &&
+                    ( pxOtherSocket->usLocalPort == usLocalPort ) &&
+                    ( pxOtherSocket->u.xTCP.usChildCount != 0U ) )
+                {
+                    pxOtherSocket->u.xTCP.usChildCount--;
+                    FreeRTOS_debug_printf( ( "Lost: Socket %u now has %u / %u child%s\n",
+                                             pxOtherSocket->usLocalPort,
+                                             pxOtherSocket->u.xTCP.usChildCount,
+                                             pxOtherSocket->u.xTCP.usBacklog,
+                                             ( pxOtherSocket->u.xTCP.usChildCount == 1U ) ? "" : "ren" ) );
+                    break;
+                }
             }
         }
     }
@@ -1976,7 +2015,7 @@ BaseType_t FreeRTOS_setsockopt( Socket_t xSocket,
                     xReturn = 0;
                     break;
 
-                case FREERTOS_SO_CLOSE_AFTER_SEND: /* As soon as the last byte has been transmitted, finalize the connection */
+                case FREERTOS_SO_CLOSE_AFTER_SEND: /* As soon as the last byte has been transmitted, finalise the connection */
                    {
                        if( pxSocket->ucProtocol != ( uint8_t ) FREERTOS_IPPROTO_TCP )
                        {
@@ -3294,17 +3333,24 @@ void vSocketWakeUpUser( FreeRTOS_Socket_t * pxSocket )
 
             if( pxBuffer != NULL )
             {
-                BaseType_t xSpace = ( BaseType_t ) uxStreamBufferGetSpace( pxBuffer );
-                BaseType_t xRemain = ( BaseType_t ) pxBuffer->LENGTH - ( BaseType_t ) pxBuffer->uxHead;
+                size_t uxSpace = uxStreamBufferGetSpace( pxBuffer );
+                size_t uxRemain = pxBuffer->LENGTH - pxBuffer->uxHead;
 
-                *pxLength = FreeRTOS_min_BaseType( xSpace, xRemain );
+                if( uxRemain <= uxSpace )
+                {
+                    *pxLength = uxRemain;
+                }
+                else
+                {
+                    *pxLength = uxSpace;
+                }
+
                 pucReturn = &( pxBuffer->ucArray[ pxBuffer->uxHead ] );
             }
         }
 
         return pucReturn;
     }
-
 #endif /* ipconfigUSE_TCP */
 /*-----------------------------------------------------------*/
 
@@ -3605,9 +3651,8 @@ void vSocketWakeUpUser( FreeRTOS_Socket_t * pxSocket )
         }
         else if( pxSocket->u.xTCP.ucTCPState != ( uint8_t ) eESTABLISHED )
         {
-            /*_RB_ Is this comment correct?  The socket is not of a type that
-             * supports the listen() operation. */
-            xResult = -pdFREERTOS_ERRNO_EOPNOTSUPP;
+            /* The socket is not connected. */
+            xResult = -pdFREERTOS_ERRNO_ENOTCONN;
         }
         else
         {
@@ -3967,13 +4012,13 @@ void vSocketWakeUpUser( FreeRTOS_Socket_t * pxSocket )
                     if( xResult != ( int32_t ) ulByteCount )
                     {
                         FreeRTOS_debug_printf( ( "lTCPAddRxdata: at %u: %d/%u bytes (tail %u head %u space %u front %u)\n",
-                                                 ( UBaseType_t ) uxOffset,
-                                                 ( BaseType_t ) xResult,
-                                                 ( UBaseType_t ) ulByteCount,
-                                                 ( UBaseType_t ) pxStream->uxTail,
-                                                 ( UBaseType_t ) pxStream->uxHead,
-                                                 ( UBaseType_t ) uxStreamBufferFrontSpace( pxStream ),
-                                                 ( UBaseType_t ) pxStream->uxFront ) );
+                                                 ( unsigned int ) uxOffset,
+                                                 ( int ) xResult,
+                                                 ( unsigned int ) ulByteCount,
+                                                 ( unsigned int ) pxStream->uxTail,
+                                                 ( unsigned int ) pxStream->uxHead,
+                                                 ( unsigned int ) uxStreamBufferFrontSpace( pxStream ),
+                                                 ( unsigned int ) pxStream->uxFront ) );
                     }
                 }
             #endif /* ipconfigHAS_DEBUG_PRINTF */
@@ -4356,6 +4401,33 @@ void vSocketWakeUpUser( FreeRTOS_Socket_t * pxSocket )
 #endif /* ipconfigUSE_TCP */
 /*-----------------------------------------------------------*/
 
+/**
+ * @brief Check whether a given socket is valid or not. Validity is defined
+ *        as the socket not being NULL and not being Invalid.
+ * @param[in] xSocket: The socket to be checked.
+ * @return pdTRUE if the socket is valid, else pdFALSE.
+ *
+ */
+BaseType_t xSocketValid( Socket_t xSocket )
+{
+    BaseType_t xReturnValue = pdFALSE;
+
+    /*
+     * There are two values which can indicate an invalid socket:
+     * FREERTOS_INVALID_SOCKET and NULL.  In order to compare against
+     * both values, the code cannot be compliant with rule 11.4,
+     * hence the Coverity suppression statement below.
+     */
+    /* coverity[misra_c_2012_rule_11_4_violation] */
+    if( ( xSocket != FREERTOS_INVALID_SOCKET ) && ( xSocket != NULL ) )
+    {
+        xReturnValue = pdTRUE;
+    }
+
+    return xReturnValue;
+}
+/*-----------------------------------------------------------*/
+
 #if 0
 
 /**
@@ -4445,8 +4517,8 @@ void vSocketWakeUpUser( FreeRTOS_Socket_t * pxSocket )
                 {
                     /* Using function "snprintf". */
                     const int32_t copied_len = snprintf( ucChildText, sizeof( ucChildText ), " %d/%d",
-                                                         ( int32_t ) pxSocket->u.xTCP.usChildCount,
-                                                         ( int32_t ) pxSocket->u.xTCP.usBacklog );
+                                                         pxSocket->u.xTCP.usChildCount,
+                                                         pxSocket->u.xTCP.usBacklog );
                     ( void ) copied_len;
                     /* These should never evaluate to false since the buffers are both shorter than 5-6 characters (<=65535) */
                     configASSERT( copied_len >= 0 );

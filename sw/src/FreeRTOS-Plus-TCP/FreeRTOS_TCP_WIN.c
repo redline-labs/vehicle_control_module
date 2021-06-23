@@ -1,5 +1,5 @@
 /*
- * FreeRTOS+TCP V2.3.1
+ * FreeRTOS+TCP V2.3.3
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -269,10 +269,6 @@
     #endif /* ipconfigUSE_TCP_WIN */
 /*-----------------------------------------------------------*/
 
-    #if ( ipconfigUSE_TCP_WIN == 1 )
-        static portINLINE BaseType_t xSequenceLessThan( uint32_t a,
-                                                        uint32_t b );
-
 /**
  * @brief Check if a < b.
  *
@@ -281,30 +277,25 @@
  *
  * @return pdTRUE when "( b - ( a + 1 ) ) < 0x80000000", else pdFALSE.
  */
-        static portINLINE BaseType_t xSequenceLessThan( uint32_t a,
-                                                        uint32_t b )
+    BaseType_t xSequenceLessThan( uint32_t a,
+                                  uint32_t b )
+    {
+        BaseType_t xResult;
+
+        /* Test if a < b */
+        if( ( ( b - ( a + 1UL ) ) & 0x80000000UL ) == 0UL )
         {
-            BaseType_t xResult;
-
-            /* Test if a < b */
-            if( ( ( b - ( a + 1UL ) ) & 0x80000000UL ) == 0UL )
-            {
-                xResult = pdTRUE;
-            }
-            else
-            {
-                xResult = pdFALSE;
-            }
-
-            return xResult;
+            xResult = pdTRUE;
+        }
+        else
+        {
+            xResult = pdFALSE;
         }
 
-    #endif /* ipconfigUSE_TCP_WIN */
-/*-----------------------------------------------------------*/
+        return xResult;
+    }
 
-    #if ( ipconfigUSE_TCP_WIN == 1 )
-        static portINLINE BaseType_t xSequenceGreaterThan( uint32_t a,
-                                                           uint32_t b );
+/*-----------------------------------------------------------*/
 
 /**
  * @brief Check if a > b.
@@ -314,25 +305,24 @@
  *
  * @return pdTRUE when "( a - b ) < 0x80000000", else pdFALSE.
  */
-        static portINLINE BaseType_t xSequenceGreaterThan( uint32_t a,
-                                                           uint32_t b )
+    BaseType_t xSequenceGreaterThan( uint32_t a,
+                                     uint32_t b )
+    {
+        BaseType_t xResult;
+
+        /* Test if a > b */
+        if( ( ( a - ( b + 1UL ) ) & 0x80000000UL ) == 0UL )
         {
-            BaseType_t xResult;
-
-            /* Test if a > b */
-            if( ( ( a - ( b + 1UL ) ) & 0x80000000UL ) == 0UL )
-            {
-                xResult = pdTRUE;
-            }
-            else
-            {
-                xResult = pdFALSE;
-            }
-
-            return xResult;
+            xResult = pdTRUE;
+        }
+        else
+        {
+            xResult = pdFALSE;
         }
 
-    #endif /* ipconfigUSE_TCP_WIN */
+        return xResult;
+    }
+
 
 /*-----------------------------------------------------------*/
     static portINLINE BaseType_t xSequenceGreaterThanOrEqual( uint32_t a,
@@ -1183,9 +1173,9 @@
                         FreeRTOS_debug_printf( ( "lTCPWindowRxCheck[%d,%d]: seqnr %u exp %u (dist %d) SACK to %u\n",
                                                  ( int ) pxWindow->usPeerPortNumber,
                                                  ( int ) pxWindow->usOurPortNumber,
-                                                 ( unsigned ) ulSequenceNumber - pxWindow->rx.ulFirstSequenceNumber,
-                                                 ( unsigned ) ulCurrentSequenceNumber - pxWindow->rx.ulFirstSequenceNumber,
-                                                 ( unsigned ) ( ulSequenceNumber - ulCurrentSequenceNumber ), /* want this signed */
+                                                 ( unsigned ) ( ulSequenceNumber - pxWindow->rx.ulFirstSequenceNumber ),
+                                                 ( unsigned ) ( ulCurrentSequenceNumber - pxWindow->rx.ulFirstSequenceNumber ),
+                                                 ( int ) ( ulSequenceNumber - ulCurrentSequenceNumber ),
                                                  ( unsigned ) ( ulLast - pxWindow->rx.ulFirstSequenceNumber ) ) );
                     }
 
@@ -1631,7 +1621,7 @@
         {
             TCPSegment_t * pxSegment;
             uint32_t ulMaxTime;
-            uint32_t ulReturn = ~0UL;
+            uint32_t ulReturn = ( ( uint32_t ) ~0UL );
 
 
             /* Fetches data to be sent-out now.
