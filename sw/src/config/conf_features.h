@@ -7,7 +7,7 @@ namespace features
 {
 
 // Enable the Lua interpreter.
-constexpr bool kEnableLua = false;
+constexpr bool kEnableLua = true;
 constexpr bool kEnableEthernet = true;
 
 // Enable reading the unique ID from Flash.

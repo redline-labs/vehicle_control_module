@@ -47,7 +47,7 @@ static void _cbSendSystemDesc(void) {
   // The magic here is to look at the IRQn values in the CMIS definition.
   // The core IRQs seem to be offset by -16 in the CMIS definition, so add 16 to the
   // value you find.
-  SEGGER_SYSVIEW_SendSysDesc("I#15=SysTick,I#55=GMAC,F#65=HELLO_WORLD");
+  SEGGER_SYSVIEW_SendSysDesc("I#15=SysTick,I#55=GMAC,I#45=AFEC0,I#56=AFEC1");
 }
 
 /*********************************************************************

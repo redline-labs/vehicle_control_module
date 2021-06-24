@@ -4,6 +4,7 @@
 #include <chip_id_helper.h>
 #include <mac_address.h>
 
+#include <task_adc.h>
 #include <task_ethernet.h>
 #include <task_led.h>
 #include <task_lua.h>
@@ -160,6 +161,11 @@ int main()
     if (false == create_task_led())
     {
         printf("Failed to create LED task.\r\n");
+    }
+
+    if (false == create_task_adc())
+    {
+        printf("Failed to create ADC task.\r\n");
     }
 
     if constexpr (features::kEnableLua)

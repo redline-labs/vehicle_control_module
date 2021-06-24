@@ -555,18 +555,22 @@ static void afec_process_callback(Afec *const afec)
 /**
  * \brief Interrupt handler for AFEC0.
  */
-void AFEC0_Handler(void)
+/*void AFEC0_Handler(void)
 {
+	traceISR_ENTER();
 	afec_process_callback(AFEC0);
-}
+	traceISR_EXIT();
+}*/
 
 /**
  * \brief Interrupt handler for AFEC1.
  */
-void AFEC1_Handler(void)
+/*void AFEC1_Handler(void)
 {
+	traceISR_ENTER();
 	afec_process_callback(AFEC1);
-}
+	traceISR_EXIT();
+}*/
 
 /**
  * \brief Enable AFEC Module.

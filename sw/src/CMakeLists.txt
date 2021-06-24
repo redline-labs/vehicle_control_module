@@ -87,6 +87,7 @@ add_executable(${PROJECT_NAME}
     main.cpp
     freertos_hooks.cpp
 
+    task_adc.cpp
     task_ethernet.cpp
     task_led.cpp
     task_lua.cpp
