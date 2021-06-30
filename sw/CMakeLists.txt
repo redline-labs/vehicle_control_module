@@ -32,8 +32,10 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 message("-- Build Type: ${CMAKE_BUILD_TYPE}")
 
+set(LINKER_SCRIPT "${CMAKE_SOURCE_DIR}/src/ASF/sam/utils/linker_scripts/samv71/samv71q21/gcc/flash.ld")
+
 add_link_options(
-    -T${CMAKE_SOURCE_DIR}/src/ASF/sam/utils/linker_scripts/samv71/samv71q21/gcc/flash.ld
+    -T${LINKER_SCRIPT}
 
     -Wl,--gc-sections
 

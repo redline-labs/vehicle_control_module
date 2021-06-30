@@ -83,6 +83,7 @@ include_directories(SYSTEM
 
 enable_language(ASM)
 
+add_link_options(-Wl,-Map=${CMAKE_BINARY_DIR}/${PROJECT_NAME}.map)
 add_executable(${PROJECT_NAME}
     main.cpp
     freertos_hooks.cpp
@@ -205,6 +206,8 @@ add_executable(${PROJECT_NAME}
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     BUILD_TYPE="${CMAKE_BUILD_TYPE}")
+
+set_target_properties(${PROJECT_NAME} PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT})
 
 set_target_properties(${PROJECT_NAME}
     # Force a .elf extension on the output file.
