@@ -23,7 +23,7 @@ void OnProjectLoad (void) {
   // Dialog-generated settings
   //
   Project.SetDevice ("ATSAMV71Q21");
-  Project.SetHostIF ("USB", "716186528");
+  Project.SetHostIF ("USB", "");
   Project.SetTargetIF ("SWD");
   Project.SetTIFSpeed ("4 MHz");
   Project.SetTraceSource ("SWO");

@@ -43,6 +43,8 @@ constexpr bool kEnableSdram = false;
 
 constexpr bool kEnableIsi = false;
 
+constexpr bool kConfigureHighsides = true;
+
 }  // namespace board
 
 #endif  // CONF_BOARD_H_

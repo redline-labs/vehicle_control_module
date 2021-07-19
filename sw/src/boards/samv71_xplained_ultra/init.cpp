@@ -34,12 +34,18 @@
  * Support and FAQ: visit <a href="https://www.microchip.com/support/">Microchip Support</a>
  */
 
-#include "board.h"
-#include "conf_board.h"
-#include "ioport.h"
-#include "pio.h"
-#include "mpu.h"
-#include "twihs.h"
+#include <board.h>
+#include <conf_board.h>
+#include <ioport.h>
+#include <pio.h>
+#include <pwm.h>
+#include <mpu.h>
+#include <twihs.h>
+
+extern "C"
+{
+#include "afec.h"
+}
 
 /**
  * \brief Set peripheral mode for IOPORT pins.
@@ -633,5 +639,90 @@ void board_init()
         pio_configure_pin(ISI_PCK0_PIO, ISI_PCK0_FLAGS);
         pio_configure_pin(OV_PWD_GPIO, OV_PWD_FLAGS);
         pio_configure_pin(OV_RST_GPIO, OV_RST_FLAGS);
+    }
+
+    /** PWM frequency in Hz */
+    #define PWM_FREQUENCY      10
+    /** Period value of PWM output waveform */
+    #define PERIOD_VALUE       100
+    /** Initial duty cycle value */
+    #define INIT_DUTY_VALUE    10
+
+    if constexpr (board::kConfigureHighsides)
+    {
+        // Highside 0.
+        ioport_set_pin_peripheral_mode(PIN_HIGHSIDE0_EN_GPIO, PIN_HIGHSIDE0_EN_FLAGS);
+
+
+
+        struct afec_config afec_cfg;
+
+        afec_enable(AFEC1);
+        afec_get_config_defaults(&afec_cfg);
+        afec_init(AFEC1, &afec_cfg);
+
+        afec_set_trigger(AFEC1, AFEC_TRIG_SW);
+
+
+        struct afec_ch_config afec_ch_cfg;
+        afec_ch_get_config_defaults(&afec_ch_cfg);
+
+        /*
+         * Because the internal AFEC offset is 0x200, it should cancel it and shift
+         * down to 0.
+         */
+        afec_channel_set_analog_offset(AFEC1, PIN_HIGHSIDE12_ADC_CHANNEL, 0x200);
+
+        afec_ch_cfg.gain = AFEC_GAINVALUE_0;
+
+        afec_ch_set_config(AFEC1, PIN_HIGHSIDE12_ADC_CHANNEL, &afec_ch_cfg);
+
+
+        afec_channel_enable(AFEC1, PIN_HIGHSIDE12_ADC_CHANNEL);
+
+
+        irq_register_handler(AFEC0_IRQn, 4U /*configAFEC_INTERRUPT_PRIORITY*/);
+        irq_register_handler(AFEC1_IRQn, 4U /*configAFEC_INTERRUPT_PRIORITY*/);
+        afec_enable_interrupt(AFEC1, PIN_HIGHSIDE12_ADC_EOC_IRQ);
+
+
+
+
+
+
+
+        pmc_enable_periph_clk(ID_PWM0);
+
+        pwm_channel_disable(PWM0, PIN_HIGHSIDE0_EN_PWM_CHANNEL);
+
+        /* Set PWM clock A as PWM_FREQUENCY*PERIOD_VALUE (clock B is not used) */
+        pwm_clock_t clock_setting = {
+            .ul_clka = PWM_FREQUENCY * PERIOD_VALUE,
+            .ul_clkb = 0,
+            .ul_mck = sysclk_get_peripheral_hz()
+        };
+
+        pwm_init(PWM0, &clock_setting);
+
+        /** PWM channel instance for LEDs */
+        pwm_channel_t g_pwm_channel_led;
+
+        /* Initialize PWM channel for LED0 */
+        /* Period is left-aligned */
+        g_pwm_channel_led.alignment = PWM_ALIGN_LEFT;
+        /* Output waveform starts at a low level */
+        g_pwm_channel_led.polarity = PWM_LOW;
+        /* Use PWM clock A as source clock */
+        g_pwm_channel_led.ul_prescaler = PWM_CMR_CPRE_CLKA;
+        /* Period value of output waveform */
+        g_pwm_channel_led.ul_period = PERIOD_VALUE;
+        /* Duty cycle value of output waveform */
+        g_pwm_channel_led.ul_duty = INIT_DUTY_VALUE;
+        g_pwm_channel_led.channel = PIN_HIGHSIDE0_EN_PWM_CHANNEL;
+
+        pwm_channel_init(PWM0, &g_pwm_channel_led);
+
+        /* Enable PWM channels for LEDs */
+        pwm_channel_enable(PWM0, PIN_HIGHSIDE0_EN_PWM_CHANNEL);
     }
 }

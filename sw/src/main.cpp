@@ -28,6 +28,7 @@
 #include <array>
 #include <cstring>
 
+
 static void configure_console()
 {
     constexpr usart_serial_options_t uart_serial_options = {
@@ -112,8 +113,6 @@ int main()
     /* Initialize the console uart */
     configure_console();
 
-    traceSTART();
-
     chipid_data_t chipid_data = {};
     chipid_read(CHIPID, &chipid_data);
 
@@ -193,6 +192,8 @@ int main()
     {
         SCB_EnableDCache();
     }
+
+    traceSTART();
 
     /* Start the scheduler. */
     vTaskStartScheduler();

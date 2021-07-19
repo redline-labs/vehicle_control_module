@@ -472,6 +472,55 @@
 #define PIN_PWM_LED1_FLAGS   (IOPORT_MODE_MUX_B)
 #define PIN_PWM_LED1_CHANNEL PWM_CHANNEL_1
 
+// Highside 0 pin definitions.
+// Net ADC0_3 -> PE05 -> J504 Analog High, Pin 4 (AD11), AFE0_AD3
+// Net HIGHSIDE_0_EN -> PD11 -> J503 Digital Low, Pin 6 (D5), PWMC0_PWMH0
+#define PIN_HIGHSIDE0_EN_GPIO           (PIO_PD11_IDX)
+#define PIN_HIGHSIDE0_EN_FLAGS          (IOPORT_MODE_MUX_B)
+#define PIN_HIGHSIDE0_EN_PWM_CHANNEL    (PWM_CHANNEL_0)
+//
+//#define PIN_HIGHSIDE0_ADC_GPIO          (PIO_PE5_IDX)
+//#define PIN_HIGHSIDE0_ADC_CHANNEL       (AFEC_CHANNEL_3)
+//#define PIN_HIGHSIDE0_ADC_EOC_IRQ       (AFEC_INTERRUPT_EOC_3)
+
+
+// Highside 1 pin definitions.
+// Net ADC0_4 -> PE04 -> J502 Analog Low, Pin 8 (AD7), AFE0_AD4
+// Net HIGHSIDE_1_EN -> PA02 -> J503 Digital Low, Pin 8 (D7), PWMC0_PWMH1
+//#define PIN_HIGHSIDE1_EN_GPIO           (PIO_PA2_IDX)
+//#define PIN_HIGHSIDE1_EN_FLAGS          (IOPORT_MODE_MUX_A)
+//#define PIN_HIGHSIDE1_EN_PWM_CHANNEL    (PWM_CHANNEL_1)
+//
+//#define PIN_HIGHSIDE1_ADC_GPIO          (PIO_PE4_IDX)
+//#define PIN_HIGHSIDE1_ADC_CHANNEL       (AFEC_CHANNEL_4)
+//#define PIN_HIGHSIDE1_ADC_EOC_IRQ       (AFEC_INTERRUPT_EOC_4)
+
+// Highside 2 pin definitions.
+// Net ADC0_6 -> PA17 ->
+// Net HIGHSIDE_2_EN -> PA25 -> J507 Digital Extra, Pin 25 (D44)
+//#define PIN_HIGHSIDE2_EN_GPIO           ()
+//#define PIN_HIGHSIDE2_EN_FLAGS          ()
+//#define PIN_HIGHSIDE2_EN_PWM_CHANNEL    ()
+//
+//#define PIN_HIGHSIDE2_ADC_GPIO          ()
+//#define PIN_HIGHSIDE2_ADC_CHANNEL       ()
+//#define PIN_HIGHSIDE2_ADC_EOC_IRQ       ()
+
+
+// Highside 12 pin definitions.
+// Net ADC1_6 -> PC31 -> J502 Analog Low, Pin 2 (AD1), AFE1_AD6
+// Net HIGHSIDE_12_EN -> PA16 ->
+#define PIN_HIGHSIDE12_EN_GPIO           ()
+#define PIN_HIGHSIDE12_EN_FLAGS          ()
+#define PIN_HIGHSIDE12_EN_PWM_CHANNEL    ()
+
+#define PIN_HIGHSIDE12_ADC_GPIO          (PIO_PC31_IDX)
+#define PIN_HIGHSIDE12_ADC_CHANNEL       (AFEC_CHANNEL_6)
+#define PIN_HIGHSIDE12_ADC_EOC_IRQ       (AFEC_INTERRUPT_EOC_6)
+
+
+
+
 /*----------------------------------------------------------------------------*/
 /** GMAC HW configurations */
 #define BOARD_GMAC_PHY_ADDR 1

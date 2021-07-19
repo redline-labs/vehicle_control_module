@@ -8,7 +8,7 @@
 constexpr const char* kLedTaskName = "LED";
 constexpr uint32_t kLedTaskStackSize = 1024U / sizeof(portSTACK_TYPE);
 constexpr UBaseType_t kLedTaskPriority = tskIDLE_PRIORITY;
-constexpr TickType_t kTaskRateTicks = pdMS_TO_TICKS(500);
+constexpr TickType_t kLedTaskRateTicks = pdMS_TO_TICKS(500);
 
 static StackType_t led_task_stack[kLedTaskStackSize] = {};
 static StaticTask_t led_task_buffer = {};
@@ -22,7 +22,7 @@ static void task_led(void* /*pvParameters*/)
     while (true)
     {
         ioport_toggle_pin_level(LED0_GPIO);
-        vTaskDelayUntil(&last_wake_time_ticks, kTaskRateTicks);
+        vTaskDelayUntil(&last_wake_time_ticks, kLedTaskRateTicks);
     }
 }
 
